@@ -1,9 +1,10 @@
 [project]
 name = "pawzzle"
 version = "0.1.0"
-description = "Add your description here"
+description = "Pawzzle: a game about dogs"
 dependencies = [
     "fastapi>=0.111.1",
+    "sqlalchemy>=2.0.31",
 ]
 readme = "README.md"
 requires-python = ">= 3.8"
