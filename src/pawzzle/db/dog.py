@@ -1,3 +1,4 @@
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from pawzzle.db.models import Dog
@@ -24,3 +25,8 @@ def store_dog(breed: str, session: Session) -> Dog:
     session.add(dog)
     session.commit()
     return dog
+
+
+def randomly_get_n_dogs(n: int, session: Session) -> list[Dog]:
+    query = session.query(Dog)
+    return query.order_by(func.random()).limit(n).all()
