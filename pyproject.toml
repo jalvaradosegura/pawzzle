@@ -17,10 +17,14 @@ build-backend = "hatchling.build"
 managed = true
 dev-dependencies = [
     "pytest>=8.3.1",
+    "coverage>=7.6.0",
 ]
 
 [tool.rye.scripts]
 test = "pytest"
+cov = { chain = ["cov:run", "cov:report"]}
+"cov:run" = "coverage run --source=src/pawzzle -m pytest"
+"cov:report" = "coverage report -m"
 
 [tool.hatch.metadata]
 allow-direct-references = true
