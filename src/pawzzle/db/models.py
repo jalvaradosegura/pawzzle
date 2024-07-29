@@ -1,3 +1,5 @@
+from typing import Any
+
 from sqlalchemy import Column, ForeignKey, String, Table
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
@@ -31,6 +33,11 @@ class Dog(Base):
     questions_as_alternative: Mapped[list["Question"]] = relationship(
         secondary=question_dog_association, back_populates="alternatives"
     )
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            column.name: getattr(self, column.name) for column in self.__table__.columns
+        }
 
 
 class Question(Base):
