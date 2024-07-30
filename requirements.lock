@@ -51,13 +51,20 @@ markupsafe==2.1.5
     # via jinja2
 mdurl==0.1.2
     # via markdown-it-py
+psycopg2-binary==2.9.9
+    # via pawzzle
 pydantic==2.8.2
     # via fastapi
+    # via pydantic-settings
 pydantic-core==2.20.1
     # via pydantic
+pydantic-settings==2.3.4
+    # via pawzzle
 pygments==2.18.0
     # via rich
 python-dotenv==1.0.1
+    # via pawzzle
+    # via pydantic-settings
     # via uvicorn
 python-multipart==0.0.9
     # via fastapi

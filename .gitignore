@@ -11,3 +11,6 @@ wheels/
 
 # coverage
 .coverage
+
+# environment files
+.env
