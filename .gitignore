@@ -14,3 +14,6 @@ wheels/
 
 # environment files
 .env
+
+# custom
+local*.py

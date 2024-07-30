@@ -10,7 +10,7 @@ from pawzzle.settings import Settings
 @asynccontextmanager
 async def lifespan(app: FastAPI):  # pragma: no cover
     settings = Settings()
-    init_db(settings.db_connection_url)
+    init_db(settings.db_connection_url, echo=settings.db_echo)  # type: ignore
     yield
 
 
