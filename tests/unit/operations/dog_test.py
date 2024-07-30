@@ -2,8 +2,8 @@ from pathlib import Path
 
 from sqlalchemy.orm import Session
 
-from pawzzle.db.dog import get_all_dogs
-from pawzzle.operations.dog import read_dogs_from_file, store_dogs_from_file
+from pawzzle.db.dog import select_all_dogs
+from pawzzle.operations.dog import read_dogs_from_file, insert_dogs_from_file
 
 
 def test_read_dogs_from_file(data_path: Path):
@@ -14,8 +14,8 @@ def test_read_dogs_from_file(data_path: Path):
 
 
 def test_store_dogs_from_file(session: Session, data_path: Path):
-    store_dogs_from_file(session, data_path / "dogs.json")
+    insert_dogs_from_file(session, data_path / "dogs.json")
 
-    all_dogs = get_all_dogs(session)
+    all_dogs = select_all_dogs(session)
 
     assert len(all_dogs) == 602

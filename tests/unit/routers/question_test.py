@@ -3,7 +3,7 @@ from unittest.mock import MagicMock, patch
 from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
 
-from pawzzle.db.dog import store_dog
+from pawzzle.db.dog import insert_dog
 from pawzzle.operations.schemas import DogSchema, QuestionSchema
 
 
@@ -11,11 +11,11 @@ from pawzzle.operations.schemas import DogSchema, QuestionSchema
 def test_get_random_question(
     mocked_generate_random_question: MagicMock, session: Session, client: TestClient
 ):
-    dog_1 = store_dog("Poodle", session)
-    dog_2 = store_dog("Pug", session)
-    dog_3 = store_dog("Husky", session)
-    dog_4 = store_dog("Corgi", session)
-    store_dog("Samoyed", session)
+    dog_1 = insert_dog("Poodle", session)
+    dog_2 = insert_dog("Pug", session)
+    dog_3 = insert_dog("Husky", session)
+    dog_4 = insert_dog("Corgi", session)
+    insert_dog("Samoyed", session)
     alternatives = [dog_1, dog_2, dog_3, dog_4]
     mocked_question_schema = QuestionSchema(
         text="Which one is a Poodle",

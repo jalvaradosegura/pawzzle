@@ -2,7 +2,7 @@ import random
 from pytest import MonkeyPatch
 from sqlalchemy.orm import Session
 
-from pawzzle.db.dog import store_dog
+from pawzzle.db.dog import insert_dog
 from pawzzle.db.models import Dog
 from pawzzle.operations.question import generate_random_question
 
@@ -14,14 +14,14 @@ def test_generate_random_question(session: Session, monkeypatch: MonkeyPatch):
         return [dog_1, dog_2, dog_3]
 
     monkeypatch.setattr(
-        "pawzzle.operations.question.db_dog.randomly_get_n_dogs",
+        "pawzzle.operations.question.db_dog.randomly_select_n_dogs",
         mocked_randomly_get_n_dogs,
     )
-    dog_1 = store_dog("Poodle", session)
-    dog_2 = store_dog("Pug", session)
-    dog_3 = store_dog("Husky", session)
-    store_dog("Corgi", session)
-    store_dog("Samoyed", session)
+    dog_1 = insert_dog("Poodle", session)
+    dog_2 = insert_dog("Pug", session)
+    dog_3 = insert_dog("Husky", session)
+    insert_dog("Corgi", session)
+    insert_dog("Samoyed", session)
     random.seed(1)
 
     question = generate_random_question(session, alternatives_amount=3)
