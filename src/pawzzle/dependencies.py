@@ -13,6 +13,6 @@ def get_settings() -> Settings:  # pragma: no cover
 
 
 def get_session(settings: Settings = Depends(get_settings)):  # pragma: no cover
-    engine, _ = init_db(settings.db_connection_url)
+    engine = init_db(settings.db_connection_url)
     with Session(engine) as session:
         yield session

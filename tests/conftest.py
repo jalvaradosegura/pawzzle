@@ -13,7 +13,7 @@ from pawzzle.routers.question import get_session
 
 @pytest.fixture(name="session")
 def session_fixture():
-    engine, Base = init_db(
+    engine = init_db(
         "sqlite:///:memory:",
         echo=False,  # type: ignore
         connect_args={"check_same_thread": False},
@@ -21,8 +21,6 @@ def session_fixture():
     )
     with Session(engine) as session:
         yield session
-
-    Base.metadata.drop_all(engine)
 
 
 @pytest.fixture(name="client")
