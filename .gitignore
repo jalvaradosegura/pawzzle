@@ -17,3 +17,6 @@ wheels/
 
 # custom
 local*.py
+
+# macOS
+.DS_Store

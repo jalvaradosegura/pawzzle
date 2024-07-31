@@ -5,8 +5,9 @@ from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
 from sqlalchemy.pool import StaticPool
 
-from pawzzle.main import app
+from pawzzle.data import DATA_DIR_PATH
 from pawzzle.db.init import init_db
+from pawzzle.main import app
 from pawzzle.routers.question import get_session
 
 
@@ -38,4 +39,4 @@ def client_fixture(session: Session):
 
 @pytest.fixture(name="data_path")
 def data_path_fixture() -> Path:
-    return Path(__file__).parent / "data"
+    return DATA_DIR_PATH
