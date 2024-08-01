@@ -24,6 +24,7 @@ dev-dependencies = [
 ]
 
 [tool.rye.scripts]
+dev = "fastapi dev src/pawzzle/main.py"
 test = "pytest"
 cov = { chain = ["cov:run", "cov:report"]}
 "cov:run" = "coverage run --source=src/pawzzle -m pytest"
