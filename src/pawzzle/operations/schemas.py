@@ -12,3 +12,7 @@ class QuestionSchema(BaseModel):
     text: str
     correct_dog: DogSchema
     alternatives: list[DogSchema]
+
+
+class QuestionWithIDSchema(QuestionSchema):
+    id: int | None = None

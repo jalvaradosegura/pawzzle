@@ -26,6 +26,7 @@ def insert_dog(breed: str, session: Session, **extra_columns: dict[str, Any]) ->
     dog = Dog(breed=breed, **extra_columns)
     session.add(dog)
     session.commit()
+    session.refresh(dog)
     return dog
 
 

@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 
 from pawzzle.dependencies import get_session
 from pawzzle.operations import question as operations
-from pawzzle.operations.schemas import QuestionSchema
+from pawzzle.operations.schemas import QuestionSchema, QuestionWithIDSchema
 
 router = APIRouter()
 
@@ -15,3 +15,10 @@ def get_random_question(
     return operations.generate_random_question(
         session, alternatives_amount=alternatives_amount
     )
+
+
+@router.post("/question", status_code=201)
+def store_question(
+    question: QuestionSchema, session: Session = Depends(get_session)
+) -> QuestionWithIDSchema:
+    return operations.store_question(session, question)
