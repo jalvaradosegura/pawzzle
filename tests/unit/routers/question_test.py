@@ -14,11 +14,11 @@ from pawzzle.operations.schemas import (
 
 @pytest.fixture(name="question_base")
 def question_base_fixture(session: Session) -> QuestionIn:
-    dog_1 = insert_dog("Poodle", session)
-    dog_2 = insert_dog("Pug", session)
-    dog_3 = insert_dog("Husky", session)
-    dog_4 = insert_dog("Corgi", session)
-    insert_dog("Samoyed", session)
+    dog_1 = insert_dog(session, "Poodle")
+    dog_2 = insert_dog(session, "Pug")
+    dog_3 = insert_dog(session, "Husky")
+    dog_4 = insert_dog(session, "Corgi")
+    insert_dog(session, "Samoyed")
     alternatives = [dog_1, dog_2, dog_3, dog_4]
     return QuestionIn(
         text="Which one is a Poodle",

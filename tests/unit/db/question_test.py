@@ -5,14 +5,14 @@ from pawzzle.db.question import select_all_questions, select_question, insert_qu
 
 
 def test_store_question(session: Session):
-    poodle = insert_dog("Poodle", session)
-    pug = insert_dog("Pug", session)
+    poodle = insert_dog(session, "Poodle")
+    pug = insert_dog(session, "Pug")
 
     question = insert_question(
-        "Which one is a Poodle?",
+        session,
+        text="Which one is a Poodle?",
         alternatives=[poodle, pug],
         correct_dog=poodle,
-        session=session,
     )
 
     assert question.id == 1
@@ -22,16 +22,16 @@ def test_store_question(session: Session):
 
 
 def test_get_question(session: Session):
-    poodle = insert_dog("Poodle", session)
-    pug = insert_dog("Pug", session)
+    poodle = insert_dog(session, "Poodle")
+    pug = insert_dog(session, "Pug")
     insert_question(
-        "Which one is a Poodle?",
+        session,
+        text="Which one is a Poodle?",
         alternatives=[poodle, pug],
         correct_dog=poodle,
-        session=session,
     )
 
-    question = select_question(1, session)
+    question = select_question(session, 1)
 
     assert question.id == 1
     assert question.text == "Which one is a Poodle?"
@@ -40,19 +40,19 @@ def test_get_question(session: Session):
 
 
 def test_get_all_questions(session: Session):
-    poodle = insert_dog("Poodle", session)
-    pug = insert_dog("Pug", session)
+    poodle = insert_dog(session, "Poodle")
+    pug = insert_dog(session, "Pug")
     insert_question(
-        "Which one is a Poodle?",
+        session,
+        text="Which one is a Poodle?",
         alternatives=[poodle, pug],
         correct_dog=poodle,
-        session=session,
     )
     insert_question(
-        "Which one is a Pug?",
+        session,
+        text="Which one is a Pug?",
         alternatives=[poodle, pug],
         correct_dog=poodle,
-        session=session,
     )
 
     questions = select_all_questions(session)
@@ -65,19 +65,19 @@ def test_get_all_questions(session: Session):
 
 
 def test_get_all_questions_limit(session: Session):
-    poodle = insert_dog("Poodle", session)
-    pug = insert_dog("Pug", session)
+    poodle = insert_dog(session, "Poodle")
+    pug = insert_dog(session, "Pug")
     insert_question(
-        "Which one is a Poodle?",
+        session,
+        text="Which one is a Poodle?",
         alternatives=[poodle, pug],
         correct_dog=poodle,
-        session=session,
     )
     insert_question(
-        "Which one is a Pug?",
+        session,
+        text="Which one is a Pug?",
         alternatives=[poodle, pug],
         correct_dog=poodle,
-        session=session,
     )
 
     questions = select_all_questions(session, limit=1)
@@ -90,19 +90,19 @@ def test_get_all_questions_limit(session: Session):
 
 
 def test_get_all_questions_offset(session: Session):
-    poodle = insert_dog("Poodle", session)
-    pug = insert_dog("Pug", session)
+    poodle = insert_dog(session, "Poodle")
+    pug = insert_dog(session, "Pug")
     insert_question(
-        "Which one is a Poodle?",
+        session,
+        text="Which one is a Poodle?",
         alternatives=[poodle, pug],
         correct_dog=poodle,
-        session=session,
     )
     insert_question(
-        "Which one is a Pug?",
+        session,
+        text="Which one is a Pug?",
         alternatives=[poodle, pug],
         correct_dog=pug,
-        session=session,
     )
 
     questions = select_all_questions(session, offset=1)
@@ -115,25 +115,25 @@ def test_get_all_questions_offset(session: Session):
 
 
 def test_get_all_questions_limit_and_offset(session: Session):
-    poodle = insert_dog("Poodle", session)
-    pug = insert_dog("Pug", session)
+    poodle = insert_dog(session, "Poodle")
+    pug = insert_dog(session, "Pug")
     insert_question(
-        "Which one is a Poodle?",
+        session,
+        text="Which one is a Poodle?",
         alternatives=[poodle, pug],
         correct_dog=poodle,
-        session=session,
     )
     insert_question(
-        "I'm a wrong question, but stored anyway",
+        session,
+        text="I'm a wrong question, but stored anyway",
         alternatives=[poodle, pug],
         correct_dog=pug,
-        session=session,
     )
     insert_question(
-        "Which one is a Pug?",
+        session,
+        text="Which one is a Pug?",
         alternatives=[poodle, pug],
         correct_dog=pug,
-        session=session,
     )
 
     questions = select_all_questions(session, limit=1, offset=1)

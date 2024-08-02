@@ -15,11 +15,11 @@ def select_all_quizzes(
     return query.all()
 
 
-def get_quiz(id: int, session: Session) -> Quiz:
+def get_quiz(session: Session, id: int) -> Quiz:
     return session.get_one(Quiz, id)
 
 
-def insert_quiz(questions: list[Question], session: Session) -> Quiz:
+def insert_quiz(session: Session, questions: list[Question]) -> Quiz:
     quiz = Quiz(questions_as_alternative=questions)
     session.add(quiz)
     session.commit()

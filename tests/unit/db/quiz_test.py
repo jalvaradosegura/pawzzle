@@ -9,19 +9,19 @@ from pawzzle.db.quiz import select_all_quizzes, get_quiz, insert_quiz
 
 @pytest.fixture(name="seed_questions", autouse=True)
 def seed_questions_fixture(session: Session) -> None:
-    poodle = insert_dog("Poodle", session)
-    pug = insert_dog("Pug", session)
+    poodle = insert_dog(session, "Poodle")
+    pug = insert_dog(session, "Pug")
     insert_question(
-        "Which one is a Poodle?",
+        session,
+        text="Which one is a Poodle?",
         alternatives=[poodle, pug],
         correct_dog=poodle,
-        session=session,
     )
     insert_question(
-        "Which one is a Pug?",
+        session,
+        text="Which one is a Pug?",
         alternatives=[poodle, pug],
         correct_dog=pug,
-        session=session,
     )
 
 
@@ -31,25 +31,25 @@ def questions_fixture(session: Session) -> list[Question]:
 
 
 def test_store_quiz(session: Session, questions: list[Question]):
-    quiz = insert_quiz(questions, session)
+    quiz = insert_quiz(session, questions)
 
     assert quiz.id == 1
     assert len(quiz.questions_as_alternative) == 2
 
 
 def test_get_quiz(session: Session, questions: list[Question]):
-    insert_quiz(questions, session)
+    insert_quiz(session, questions)
 
-    quiz = get_quiz(1, session)
+    quiz = get_quiz(session, 1)
 
     assert quiz.id == 1
     assert len(quiz.questions_as_alternative) == 2
 
 
 def test_get_all_quizzes(session: Session, questions: list[Question]):
-    insert_quiz(questions, session)
-    insert_quiz(questions, session)
-    insert_quiz(questions, session)
+    insert_quiz(session, questions)
+    insert_quiz(session, questions)
+    insert_quiz(session, questions)
 
     quizzes = select_all_quizzes(session)
 
@@ -58,11 +58,11 @@ def test_get_all_quizzes(session: Session, questions: list[Question]):
 
 def test_get_all_quizzes_limit(session: Session, questions: list[Question]):
     q = select_all_questions(session)
-    insert_quiz(q, session)
+    insert_quiz(session, q)
     q = select_all_questions(session)
-    insert_quiz(q, session)
+    insert_quiz(session, q)
     q = select_all_questions(session)
-    insert_quiz(q, session)
+    insert_quiz(session, q)
 
     quizzes = select_all_quizzes(session, limit=2)
 
@@ -71,11 +71,11 @@ def test_get_all_quizzes_limit(session: Session, questions: list[Question]):
 
 def test_get_all_quizzes_offset(session: Session, questions: list[Question]):
     q = select_all_questions(session)
-    insert_quiz(q, session)
+    insert_quiz(session, q)
     q = select_all_questions(session)
-    insert_quiz(q, session)
+    insert_quiz(session, q)
     q = select_all_questions(session)
-    insert_quiz(q, session)
+    insert_quiz(session, q)
 
     quizzes = select_all_quizzes(session, offset=1)
 
@@ -84,11 +84,11 @@ def test_get_all_quizzes_offset(session: Session, questions: list[Question]):
 
 def test_get_all_quizzes_limit_and_offset(session: Session, questions: list[Question]):
     q = select_all_questions(session)
-    insert_quiz(q, session)
+    insert_quiz(session, q)
     q = select_all_questions(session)
-    insert_quiz(q, session)
+    insert_quiz(session, q)
     q = select_all_questions(session)
-    insert_quiz(q, session)
+    insert_quiz(session, q)
 
     quizzes = select_all_quizzes(session, limit=1, offset=2)
 

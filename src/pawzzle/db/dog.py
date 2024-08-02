@@ -7,7 +7,7 @@ from pawzzle.db.models import Dog
 
 
 def select_all_dogs(
-    session: Session, limit: None | int = None, offset: None | int = None
+    session: Session, *, limit: None | int = None, offset: None | int = None
 ) -> list[Dog]:
     query = session.query(Dog)
     if limit:
@@ -18,11 +18,11 @@ def select_all_dogs(
     return query.all()
 
 
-def select_dog(id: int, session: Session) -> Dog:
+def select_dog(session: Session, id: int) -> Dog:
     return session.get_one(Dog, id)
 
 
-def insert_dog(breed: str, session: Session, **extra_columns: dict[str, Any]) -> Dog:
+def insert_dog(session: Session, breed: str, **extra_columns: dict[str, Any]) -> Dog:
     dog = Dog(breed=breed, **extra_columns)
     session.add(dog)
     session.commit()
@@ -30,7 +30,7 @@ def insert_dog(breed: str, session: Session, **extra_columns: dict[str, Any]) ->
     return dog
 
 
-def randomly_select_n_dogs(n: int, session: Session) -> list[Dog]:
+def randomly_select_n_dogs(session: Session, n: int) -> list[Dog]:
     query = session.query(Dog)
     return query.order_by(func.random()).limit(n).all()
 

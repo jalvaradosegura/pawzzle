@@ -12,11 +12,11 @@ from pawzzle.operations.question import store_question, generate_random_question
 
 @pytest.fixture(name="random_question", autouse=True)
 def random_question_fixture(session: Session, monkeypatch: MonkeyPatch):
-    dog_1 = insert_dog("Poodle", session)
-    dog_2 = insert_dog("Pug", session)
-    dog_3 = insert_dog("Husky", session)
-    insert_dog("Corgi", session)
-    insert_dog("Samoyed", session)
+    dog_1 = insert_dog(session, "Poodle")
+    dog_2 = insert_dog(session, "Pug")
+    dog_3 = insert_dog(session, "Husky")
+    insert_dog(session, "Corgi")
+    insert_dog(session, "Samoyed")
     random.seed(1)
 
     def mocked_randomly_get_n_dogs(
@@ -45,7 +45,7 @@ def test_store_question(session: Session):
     question = generate_random_question(session, alternatives_amount=3)
     store_question(session, question)
 
-    stored_question = select_question(1, session)
+    stored_question = select_question(session, 1)
 
     assert stored_question.text == "Which one is a Poodle"
     assert stored_question.correct_dog.breed == "Poodle"

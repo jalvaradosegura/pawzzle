@@ -10,28 +10,26 @@ from pawzzle.db.question import insert_question
 
 @pytest.fixture(name="question")
 def question_fixture(session: Session) -> Question:
-    poodle = insert_dog("Poodle", session)
-    pug = insert_dog("Pug", session)
+    poodle = insert_dog(session, "Poodle")
+    pug = insert_dog(session, "Pug")
     insert_question(
-        "Which one is a Poodle?",
+        session,
+        text="Which one is a Poodle?",
         alternatives=[poodle, pug],
         correct_dog=poodle,
-        session=session,
     )
     question = insert_question(
-        "Which one is a Pug?",
+        session,
+        text="Which one is a Pug?",
         alternatives=[poodle, pug],
         correct_dog=pug,
-        session=session,
     )
 
     return question
 
 
 def test_insert_answer(session: Session, question: Question):
-    answer = insert_answer(
-        dog_id=2, correct=True, question_id=question.id, session=session
-    )
+    answer = insert_answer(session, dog_id=2, correct=True, question_id=question.id)
 
     assert answer.id == 1
     assert answer.correct is True

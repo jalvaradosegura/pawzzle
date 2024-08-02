@@ -14,7 +14,7 @@ from pawzzle.db.models import Dog
 
 
 def test_insert_dog(session: Session):
-    dog = insert_dog("Poodle", session)
+    dog = insert_dog(session, "Poodle")
 
     assert dog.id == 1
     assert dog.breed == "Poodle"
@@ -22,10 +22,10 @@ def test_insert_dog(session: Session):
 
 @pytest.mark.parametrize("target_id, target_breed", [[1, "Poodle"], [2, "Pug"]])
 def test_get_dog(target_id: int, target_breed: str, session: Session):
-    insert_dog("Poodle", session)
-    insert_dog("Pug", session)
+    insert_dog(session, "Poodle")
+    insert_dog(session, "Pug")
 
-    dog = select_dog(target_id, session)
+    dog = select_dog(session, target_id)
 
     assert dog.id == target_id
     assert dog.breed == target_breed
@@ -33,13 +33,13 @@ def test_get_dog(target_id: int, target_breed: str, session: Session):
 
 def test_get_dog_exception(session: Session):
     with pytest.raises(NoResultFound):
-        select_dog(10, session)
+        select_dog(session, 10)
 
 
 def test_get_all_dogs(session: Session):
-    insert_dog("Poodle", session)
-    insert_dog("Pug", session)
-    insert_dog("Husky", session)
+    insert_dog(session, "Poodle")
+    insert_dog(session, "Pug")
+    insert_dog(session, "Husky")
 
     dogs = select_all_dogs(session)
 
@@ -47,9 +47,9 @@ def test_get_all_dogs(session: Session):
 
 
 def test_get_all_dogs_limit(session: Session):
-    insert_dog("Poodle", session)
-    insert_dog("Pug", session)
-    insert_dog("Husky", session)
+    insert_dog(session, "Poodle")
+    insert_dog(session, "Pug")
+    insert_dog(session, "Husky")
 
     dogs = select_all_dogs(session, limit=2)
 
@@ -59,9 +59,9 @@ def test_get_all_dogs_limit(session: Session):
 
 
 def test_get_all_dogs_offset(session: Session):
-    insert_dog("Poodle", session)
-    insert_dog("Pug", session)
-    insert_dog("Husky", session)
+    insert_dog(session, "Poodle")
+    insert_dog(session, "Pug")
+    insert_dog(session, "Husky")
 
     dogs = select_all_dogs(session, offset=1)
 
@@ -71,9 +71,9 @@ def test_get_all_dogs_offset(session: Session):
 
 
 def test_get_all_dogs_limit_and_offset(session: Session):
-    insert_dog("Poodle", session)
-    insert_dog("Pug", session)
-    insert_dog("Husky", session)
+    insert_dog(session, "Poodle")
+    insert_dog(session, "Pug")
+    insert_dog(session, "Husky")
 
     dogs = select_all_dogs(session, limit=1, offset=1)
 
@@ -82,18 +82,18 @@ def test_get_all_dogs_limit_and_offset(session: Session):
 
 
 def test_randomly_get_n_dogs(session: Session, monkeypatch: MonkeyPatch):
-    dog_1 = insert_dog("Poodle", session)
-    dog_2 = insert_dog("Pug", session)
-    dog_3 = insert_dog("Husky", session)
-    insert_dog("Corgi", session)
-    insert_dog("Samoyed", session)
+    dog_1 = insert_dog(session, "Poodle")
+    dog_2 = insert_dog(session, "Pug")
+    dog_3 = insert_dog(session, "Husky")
+    insert_dog(session, "Corgi")
+    insert_dog(session, "Samoyed")
     n = 3
 
     def mocked_query_all(query: Query[Dog]) -> list[Dog]:
         return [dog_1, dog_2, dog_3]
 
     monkeypatch.setattr(Query, "all", mocked_query_all)
-    dogs = randomly_select_n_dogs(n, session)
+    dogs = randomly_select_n_dogs(session, n)
 
     assert len(dogs) == 3
     assert dogs[0].breed == "Poodle"

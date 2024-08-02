@@ -14,7 +14,7 @@ from pawzzle.operations.schemas import (
 def generate_random_question(
     session: Session, *, alternatives_amount: int
 ) -> QuestionIn:
-    alternatives = randomly_select_n_dogs(alternatives_amount, session)
+    alternatives = randomly_select_n_dogs(session, alternatives_amount)
     correct_dog = random.choice(alternatives)
 
     question = QuestionIn(
@@ -29,16 +29,16 @@ def generate_random_question(
 def store_question(session: Session, question: QuestionIn) -> QuestionOut:
     alternatives: list[Dog] = []
     for alternative in question.alternatives:
-        dog = select_dog(alternative.id, session)
+        dog = select_dog(session, alternative.id)
         alternatives.append(dog)
 
-    correct_dog = select_dog(question.correct_dog.id, session)
+    correct_dog = select_dog(session, question.correct_dog.id)
 
     stored_question = insert_question(
-        question.text,
+        session,
+        text=question.text,
         alternatives=alternatives,
         correct_dog=correct_dog,
-        session=session,
     )
     question_with_id = QuestionOut(id=stored_question.id, **question.model_dump())
 

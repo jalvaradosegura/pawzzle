@@ -5,7 +5,7 @@ from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
 from sqlalchemy.pool import StaticPool
 
-from pawzzle.data import DATA_DIR_PATH
+from pawzzle.assets import DATA_DIR_PATH
 from pawzzle.db.init import init_db
 from pawzzle.main import app
 from pawzzle.routers.question import get_session
