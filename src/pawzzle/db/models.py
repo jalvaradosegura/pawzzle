@@ -1,6 +1,6 @@
 from typing import Any
 
-from sqlalchemy import Column, ForeignKey, String, Table
+from sqlalchemy import Boolean, Column, DateTime, ForeignKey, String, Table, func
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 
@@ -36,6 +36,8 @@ class Dog(Base):
         secondary=question_dog_association, back_populates="alternatives"
     )
 
+    answers: Mapped[list["Answer"]] = relationship()
+
     def to_dict(self) -> dict[str, Any]:
         return {
             column.name: getattr(self, column.name) for column in self.__table__.columns
@@ -58,6 +60,8 @@ class Question(Base):
         secondary=quiz_question_association, back_populates="questions_as_alternative"
     )
 
+    answers: Mapped[list["Answer"]] = relationship()
+
 
 class Quiz(Base):
     __tablename__ = "quiz"
@@ -66,3 +70,23 @@ class Quiz(Base):
     questions_as_alternative: Mapped[list["Question"]] = relationship(
         secondary=quiz_question_association, back_populates="quizzes"
     )
+
+
+class Answer(Base):
+    __tablename__ = "answer"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    correct: Mapped[Boolean] = mapped_column(Boolean)
+    created_at: Mapped[DateTime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now()
+    )
+
+    question_id: Mapped[int] = mapped_column(ForeignKey("question.id"))
+    question: Mapped[Question] = relationship(back_populates="answers")
+
+    dog_id: Mapped[int] = mapped_column(ForeignKey("dog.id"))
+    dog: Mapped[Dog] = relationship(back_populates="answers")
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            column.name: getattr(self, column.name) for column in self.__table__.columns
+        }

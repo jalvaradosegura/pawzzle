@@ -13,7 +13,7 @@ from pawzzle.db.dog import (
 from pawzzle.db.models import Dog
 
 
-def test_store_dog(session: Session):
+def test_insert_dog(session: Session):
     dog = insert_dog("Poodle", session)
 
     assert dog.id == 1
@@ -99,7 +99,7 @@ def test_randomly_get_n_dogs(session: Session, monkeypatch: MonkeyPatch):
     assert dogs[0].breed == "Poodle"
 
 
-def test_bulk_store_dogs(session: Session):
+def test_bulk_insert_dogs(session: Session):
     bulk_insert_dogs(
         session,
         [
