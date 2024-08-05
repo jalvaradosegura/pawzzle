@@ -2,7 +2,7 @@ import random
 
 from sqlalchemy.orm import Session
 
-from pawzzle.db.dog import Dog, select_dog, randomly_select_n_dogs
+from pawzzle.db.dog import select_all_dogs, randomly_select_n_dogs
 from pawzzle.db.question import insert_question
 from pawzzle.operations.schemas import (
     QuestionIn,
@@ -36,18 +36,18 @@ def generate_random_questions(
 
 
 def store_question(session: Session, question: QuestionIn) -> QuestionOut:
-    alternatives: list[Dog] = []
-    for alternative in question.alternatives:
-        dog = select_dog(session, alternative.id)
-        alternatives.append(dog)
-
-    correct_dog = select_dog(session, question.correct_dog.id)
+    all_dogs_id = {alternative.id for alternative in question.alternatives}
+    all_dogs_id.add(question.correct_dog.id)
+    dogs = select_all_dogs(session, filter_=all_dogs_id)
+    dogs_map = {dog.id: dog for dog in dogs}
 
     stored_question = insert_question(
         session,
         text=question.text,
-        alternatives=alternatives,
-        correct_dog=correct_dog,
+        alternatives=[
+            dogs_map[alternative.id] for alternative in question.alternatives
+        ],
+        correct_dog=dogs_map[question.correct_dog.id],
     )
     question_with_id = QuestionOut(id=stored_question.id, **question.model_dump())
 

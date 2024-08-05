@@ -70,6 +70,22 @@ def test_select_all_dogs_offset(session: Session):
     assert dogs[1].breed == "Husky"
 
 
+def test_select_all_dogs_filter(session: Session):
+    insert_dog(session, "Poodle")
+    insert_dog(session, "Pug")
+    insert_dog(session, "Husky")
+    insert_dog(session, "Corgi Pembroke")
+    insert_dog(session, "Corgi Cardigan")
+    insert_dog(session, "Golden")
+
+    dogs = select_all_dogs(session, filter_={1, 2, 4})
+
+    assert len(dogs) == 3
+    assert dogs[0].breed == "Poodle"
+    assert dogs[1].breed == "Pug"
+    assert dogs[2].breed == "Corgi Pembroke"
+
+
 def test_select_all_dogs_limit_and_offset(session: Session):
     insert_dog(session, "Poodle")
     insert_dog(session, "Pug")

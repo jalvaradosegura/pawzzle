@@ -7,13 +7,19 @@ from pawzzle.db.models import Dog
 
 
 def select_all_dogs(
-    session: Session, *, limit: None | int = None, offset: None | int = None
+    session: Session,
+    *,
+    limit: None | int = None,
+    offset: None | int = None,
+    filter_: list[int] | set[int] | None = None,
 ) -> list[Dog]:
     query = session.query(Dog)
     if limit:
         query = query.limit(limit)
     if offset:
         query = query.offset(offset)
+    if filter_:
+        query = query.where(Dog.id.in_(filter_))
 
     return query.all()
 
