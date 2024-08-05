@@ -3,7 +3,7 @@ import random
 from sqlalchemy.orm import Session
 
 from pawzzle.db.dog import select_all_dogs, randomly_select_n_dogs
-from pawzzle.db.question import insert_question
+from pawzzle.db.question import BulkQuestionData, insert_question, bulk_insert_questions
 from pawzzle.operations.schemas import (
     QuestionIn,
     DogIn,
@@ -52,3 +52,16 @@ def store_question(session: Session, question: QuestionIn) -> QuestionOut:
     question_with_id = QuestionOut(id=stored_question.id, **question.model_dump())
 
     return question_with_id
+
+
+def store_questions(session: Session, questions: list[QuestionIn]) -> None:
+    prepared_data: list[BulkQuestionData] = []
+    for question in questions:
+        bulk_question: BulkQuestionData = {
+            "text": question.text,
+            "correct_dog_id": question.correct_dog.id,
+            "alternatives": [alternative.id for alternative in question.alternatives],
+        }
+        prepared_data.append(bulk_question)
+
+    bulk_insert_questions(session, prepared_data)

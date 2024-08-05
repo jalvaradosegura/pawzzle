@@ -1,7 +1,13 @@
 from sqlalchemy.orm import Session
 
 from pawzzle.db.dog import insert_dog
-from pawzzle.db.question import select_all_questions, select_question, insert_question
+from pawzzle.db.question import (
+    BulkQuestionData,
+    bulk_insert_questions,
+    select_all_questions,
+    select_question,
+    insert_question,
+)
 
 
 def test_insert_question(session: Session):
@@ -19,6 +25,28 @@ def test_insert_question(session: Session):
     assert question.text == "Which one is a Poodle?"
     assert question.alternatives == [poodle, pug]
     assert question.correct_dog == poodle
+
+
+def test_bulk_insert_questions(session: Session):
+    poodle = insert_dog(session, "Poodle")
+    pug = insert_dog(session, "Pug")
+    bulk_data: list[BulkQuestionData] = [
+        {
+            "text": "Which one is a Poodle?",
+            "alternatives": [poodle.id, pug.id],
+            "correct_dog_id": poodle.id,
+        },
+        {
+            "text": "Which one is a Pug?",
+            "alternatives": [poodle.id, pug.id],
+            "correct_dog_id": pug.id,
+        },
+    ]
+
+    bulk_insert_questions(session, bulk_data)
+    questions = select_all_questions(session)
+
+    assert len(questions) == 2
 
 
 def test_select_question(session: Session):

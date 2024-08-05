@@ -5,6 +5,9 @@ from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
 
 from pawzzle.db.dog import insert_dog
+from pawzzle.db.models import question_dog_association
+from pawzzle.db.question import select_all_questions
+from pawzzle.operations.question import generate_random_questions
 from pawzzle.operations.schemas import (
     DogIn,
     QuestionIn,
@@ -27,7 +30,7 @@ def question_base_fixture(session: Session) -> QuestionIn:
     )
 
 
-@pytest.fixture(name="question_base")
+@pytest.fixture(name="question_schema")
 def question_schema_fixture(question_base: QuestionIn) -> QuestionOut:
     return QuestionOut(id=None, **question_base.model_dump())
 
@@ -36,9 +39,9 @@ def question_schema_fixture(question_base: QuestionIn) -> QuestionOut:
 def test_get_random_question(
     mocked_generate_random_question: MagicMock,
     client: TestClient,
-    question_base: QuestionOut,
+    question_schema: QuestionOut,
 ):
-    mocked_generate_random_question.return_value = question_base
+    mocked_generate_random_question.return_value = question_schema
     response = client.get("/question")
 
     assert response.status_code == 200
@@ -83,9 +86,9 @@ def test_get_random_question(
 def test_get_random_questions(
     mocked_generate_random_question: MagicMock,
     client: TestClient,
-    question_base: QuestionOut,
+    question_schema: QuestionOut,
 ):
-    mocked_generate_random_question.return_value = question_base
+    mocked_generate_random_question.return_value = question_schema
     response = client.get("/questions")
 
     assert response.status_code == 200
@@ -137,3 +140,23 @@ def test_store_question(question_base: QuestionIn, client: TestClient):
             },
         ],
     }
+
+
+def test_store_questions(session: Session, client: TestClient):
+    insert_dog(session, "Poodle")
+    insert_dog(session, "Pug")
+    insert_dog(session, "Husky")
+    insert_dog(session, "Corgi")
+    random_questions = generate_random_questions(
+        session, alternatives_amount=4, questions_amount=4
+    )
+
+    response = client.post(
+        "/questions", json=[question.model_dump() for question in random_questions]
+    )
+    all_questions = select_all_questions(session)
+    associations = session.query(question_dog_association).all()
+
+    assert response.status_code == 201
+    assert len(all_questions) == 4
+    assert len(associations) == 16

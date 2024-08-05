@@ -1,6 +1,9 @@
+from typing import TypedDict
+
+from sqlalchemy import insert
 from sqlalchemy.orm import Session
 
-from pawzzle.db.models import Dog, Question
+from pawzzle.db.models import Dog, Question, question_dog_association
 
 
 def insert_question(
@@ -26,3 +29,36 @@ def select_all_questions(
 
 def select_question(session: Session, id: int) -> Question:
     return session.get_one(Question, id)
+
+
+class BulkQuestionData(TypedDict):
+    text: str
+    correct_dog_id: int
+    alternatives: list[int]
+
+
+class AssociationData(TypedDict):
+    question_id: int
+    dog_id: int
+
+
+def bulk_insert_questions(session: Session, questions_data: list[BulkQuestionData]):
+    stmt = insert(Question).values(
+        [
+            {"text": data["text"], "correct_dog_id": data["correct_dog_id"]}
+            for data in questions_data
+        ]
+    )
+
+    result = session.execute(stmt.returning(Question.id))
+    inserted_ids = [row[0] for row in result]
+
+    association_data: list[AssociationData] = []
+    for idx, question in enumerate(questions_data):
+        for alternative in question["alternatives"]:
+            association_data.append(
+                {"question_id": inserted_ids[idx], "dog_id": alternative}
+            )
+
+    session.execute(insert(question_dog_association), association_data)
+    session.commit()

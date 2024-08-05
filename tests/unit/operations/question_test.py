@@ -6,8 +6,12 @@ from sqlalchemy.orm import Session
 
 from pawzzle.db.dog import insert_dog
 from pawzzle.db.models import Dog
-from pawzzle.db.question import select_question
-from pawzzle.operations.question import store_question, generate_random_question
+from pawzzle.db.question import select_question, select_all_questions
+from pawzzle.operations.question import (
+    generate_random_question,
+    store_question,
+    store_questions,
+)
 
 
 @pytest.fixture(name="random_question", autouse=True)
@@ -52,3 +56,14 @@ def test_store_question(session: Session):
     assert stored_question.alternatives[0].breed == "Poodle"
     assert stored_question.alternatives[1].breed == "Pug"
     assert stored_question.alternatives[2].breed == "Husky"
+
+
+def test_store_questions(session: Session) -> None:
+    question_1 = generate_random_question(session, alternatives_amount=3)
+    question_2 = generate_random_question(session, alternatives_amount=3)
+    question_3 = generate_random_question(session, alternatives_amount=3)
+
+    store_questions(session, [question_1, question_2, question_3])
+    all_questions = select_all_questions(session)
+
+    assert len(all_questions) == 3
