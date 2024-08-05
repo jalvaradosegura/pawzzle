@@ -17,6 +17,19 @@ def get_random_question(
     )
 
 
+@router.get("/questions")
+def get_random_questions(
+    session: Session = Depends(get_session),
+    questions_amount: int = 5,
+    alternatives_amount: int = 4,
+) -> list[QuestionIn]:
+    return operations.generate_random_questions(
+        session,
+        alternatives_amount=alternatives_amount,
+        questions_amount=questions_amount,
+    )
+
+
 @router.post("/question", status_code=201)
 def store_question(
     question: QuestionIn, session: Session = Depends(get_session)

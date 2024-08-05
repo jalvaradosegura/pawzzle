@@ -79,6 +79,24 @@ def test_get_random_question(
     }
 
 
+@patch("pawzzle.operations.question.generate_random_question")
+def test_get_random_questions(
+    mocked_generate_random_question: MagicMock,
+    client: TestClient,
+    question_base: QuestionOut,
+):
+    mocked_generate_random_question.return_value = question_base
+    response = client.get("/questions")
+
+    assert response.status_code == 200
+    assert len(response.json()) == 5
+    assert response.json()[0]["text"] == "Which one is a Poodle"
+    assert response.json()[1]["text"] == "Which one is a Poodle"
+    assert response.json()[2]["text"] == "Which one is a Poodle"
+    assert response.json()[3]["text"] == "Which one is a Poodle"
+    assert response.json()[4]["text"] == "Which one is a Poodle"
+
+
 def test_store_question(question_base: QuestionIn, client: TestClient):
     response = client.post("/question", json=question_base.model_dump())
 

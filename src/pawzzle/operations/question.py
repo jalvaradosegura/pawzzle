@@ -26,6 +26,15 @@ def generate_random_question(
     return question
 
 
+def generate_random_questions(
+    session: Session, *, alternatives_amount: int, questions_amount: int
+) -> list[QuestionIn]:
+    return [
+        generate_random_question(session, alternatives_amount=alternatives_amount)
+        for _ in range(questions_amount)
+    ]
+
+
 def store_question(session: Session, question: QuestionIn) -> QuestionOut:
     alternatives: list[Dog] = []
     for alternative in question.alternatives:
