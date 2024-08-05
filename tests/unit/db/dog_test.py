@@ -21,7 +21,7 @@ def test_insert_dog(session: Session):
 
 
 @pytest.mark.parametrize("target_id, target_breed", [[1, "Poodle"], [2, "Pug"]])
-def test_get_dog(target_id: int, target_breed: str, session: Session):
+def test_select_dog(target_id: int, target_breed: str, session: Session):
     insert_dog(session, "Poodle")
     insert_dog(session, "Pug")
 
@@ -31,7 +31,7 @@ def test_get_dog(target_id: int, target_breed: str, session: Session):
     assert dog.breed == target_breed
 
 
-def test_get_dog_exception(session: Session):
+def test_select_dog_exception(session: Session):
     with pytest.raises(NoResultFound):
         select_dog(session, 10)
 
@@ -46,7 +46,7 @@ def test_get_all_dogs(session: Session):
     assert len(dogs) == 3
 
 
-def test_get_all_dogs_limit(session: Session):
+def test_select_all_dogs_limit(session: Session):
     insert_dog(session, "Poodle")
     insert_dog(session, "Pug")
     insert_dog(session, "Husky")
@@ -58,7 +58,7 @@ def test_get_all_dogs_limit(session: Session):
     assert dogs[1].breed == "Pug"
 
 
-def test_get_all_dogs_offset(session: Session):
+def test_select_all_dogs_offset(session: Session):
     insert_dog(session, "Poodle")
     insert_dog(session, "Pug")
     insert_dog(session, "Husky")
@@ -70,7 +70,7 @@ def test_get_all_dogs_offset(session: Session):
     assert dogs[1].breed == "Husky"
 
 
-def test_get_all_dogs_limit_and_offset(session: Session):
+def test_select_all_dogs_limit_and_offset(session: Session):
     insert_dog(session, "Poodle")
     insert_dog(session, "Pug")
     insert_dog(session, "Husky")
@@ -81,7 +81,7 @@ def test_get_all_dogs_limit_and_offset(session: Session):
     assert dogs[0].breed == "Pug"
 
 
-def test_randomly_get_n_dogs(session: Session, monkeypatch: MonkeyPatch):
+def test_randomly_select_n_dogs(session: Session, monkeypatch: MonkeyPatch):
     dog_1 = insert_dog(session, "Poodle")
     dog_2 = insert_dog(session, "Pug")
     dog_3 = insert_dog(session, "Husky")

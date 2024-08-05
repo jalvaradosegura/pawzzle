@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from pawzzle.db.dog import insert_dog
 from pawzzle.db.models import Question
 from pawzzle.db.question import select_all_questions, insert_question
-from pawzzle.db.quiz import select_all_quizzes, get_quiz, insert_quiz
+from pawzzle.db.quiz import select_all_quizzes, select_quiz, insert_quiz
 
 
 @pytest.fixture(name="seed_questions", autouse=True)
@@ -30,17 +30,17 @@ def questions_fixture(session: Session) -> list[Question]:
     return select_all_questions(session)
 
 
-def test_store_quiz(session: Session, questions: list[Question]):
+def test_insert_quiz(session: Session, questions: list[Question]):
     quiz = insert_quiz(session, questions)
 
     assert quiz.id == 1
     assert len(quiz.questions_as_alternative) == 2
 
 
-def test_get_quiz(session: Session, questions: list[Question]):
+def test_select_quiz(session: Session, questions: list[Question]):
     insert_quiz(session, questions)
 
-    quiz = get_quiz(session, 1)
+    quiz = select_quiz(session, 1)
 
     assert quiz.id == 1
     assert len(quiz.questions_as_alternative) == 2
@@ -56,7 +56,7 @@ def test_get_all_quizzes(session: Session, questions: list[Question]):
     assert len(quizzes) == 3
 
 
-def test_get_all_quizzes_limit(session: Session, questions: list[Question]):
+def test_select_all_quizzes_limit(session: Session, questions: list[Question]):
     q = select_all_questions(session)
     insert_quiz(session, q)
     q = select_all_questions(session)
@@ -69,7 +69,7 @@ def test_get_all_quizzes_limit(session: Session, questions: list[Question]):
     assert len(quizzes) == 2
 
 
-def test_get_all_quizzes_offset(session: Session, questions: list[Question]):
+def test_select_all_quizzes_offset(session: Session, questions: list[Question]):
     q = select_all_questions(session)
     insert_quiz(session, q)
     q = select_all_questions(session)
@@ -82,7 +82,9 @@ def test_get_all_quizzes_offset(session: Session, questions: list[Question]):
     assert len(quizzes) == 2
 
 
-def test_get_all_quizzes_limit_and_offset(session: Session, questions: list[Question]):
+def test_select_all_quizzes_limit_and_offset(
+    session: Session, questions: list[Question]
+):
     q = select_all_questions(session)
     insert_quiz(session, q)
     q = select_all_questions(session)

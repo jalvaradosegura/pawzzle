@@ -15,7 +15,7 @@ def select_all_quizzes(
     return query.all()
 
 
-def get_quiz(session: Session, id: int) -> Quiz:
+def select_quiz(session: Session, id: int) -> Quiz:
     return session.get_one(Quiz, id)
 
 

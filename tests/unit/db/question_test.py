@@ -4,7 +4,7 @@ from pawzzle.db.dog import insert_dog
 from pawzzle.db.question import select_all_questions, select_question, insert_question
 
 
-def test_store_question(session: Session):
+def test_insert_question(session: Session):
     poodle = insert_dog(session, "Poodle")
     pug = insert_dog(session, "Pug")
 
@@ -21,7 +21,7 @@ def test_store_question(session: Session):
     assert question.correct_dog == poodle
 
 
-def test_get_question(session: Session):
+def test_select_question(session: Session):
     poodle = insert_dog(session, "Poodle")
     pug = insert_dog(session, "Pug")
     insert_question(
@@ -39,7 +39,7 @@ def test_get_question(session: Session):
     assert question.correct_dog == poodle
 
 
-def test_get_all_questions(session: Session):
+def test_select_all_questions(session: Session):
     poodle = insert_dog(session, "Poodle")
     pug = insert_dog(session, "Pug")
     insert_question(
@@ -64,7 +64,7 @@ def test_get_all_questions(session: Session):
     assert questions[0].correct_dog == poodle
 
 
-def test_get_all_questions_limit(session: Session):
+def test_select_all_questions_limit(session: Session):
     poodle = insert_dog(session, "Poodle")
     pug = insert_dog(session, "Pug")
     insert_question(
@@ -89,7 +89,7 @@ def test_get_all_questions_limit(session: Session):
     assert questions[0].correct_dog == poodle
 
 
-def test_get_all_questions_offset(session: Session):
+def test_select_all_questions_offset(session: Session):
     poodle = insert_dog(session, "Poodle")
     pug = insert_dog(session, "Pug")
     insert_question(
@@ -114,7 +114,7 @@ def test_get_all_questions_offset(session: Session):
     assert questions[0].correct_dog == pug
 
 
-def test_get_all_questions_limit_and_offset(session: Session):
+def test_select_all_questions_limit_and_offset(session: Session):
     poodle = insert_dog(session, "Poodle")
     pug = insert_dog(session, "Pug")
     insert_question(
