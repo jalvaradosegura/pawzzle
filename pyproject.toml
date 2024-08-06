@@ -22,6 +22,8 @@ managed = true
 dev-dependencies = [
     "pytest>=8.3.1",
     "coverage>=7.6.0",
+    "isort>=5.13.2",
+    "mypy>=1.11.1",
 ]
 
 [tool.rye.scripts]
@@ -36,3 +38,6 @@ allow-direct-references = true
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/pawzzle"]
+
+[tool.isort]
+profile = "black"

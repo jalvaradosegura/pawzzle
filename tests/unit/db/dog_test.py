@@ -1,14 +1,14 @@
 import pytest
 from pytest import MonkeyPatch
-from sqlalchemy.orm import Session, Query
 from sqlalchemy.exc import NoResultFound
+from sqlalchemy.orm import Query, Session
 
 from pawzzle.db.dog import (
     bulk_insert_dogs,
-    select_all_dogs,
-    select_dog,
     insert_dog,
     randomly_select_n_dogs,
+    select_all_dogs,
+    select_dog,
 )
 from pawzzle.db.models import Dog
 

@@ -1,11 +1,8 @@
 import pytest
 from fastapi.testclient import TestClient
-
-
 from sqlalchemy.orm import Session
 
-from pawzzle import db
-from pawzzle import operations
+from pawzzle import db, operations
 
 
 @pytest.fixture(name="question")

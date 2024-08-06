@@ -1,9 +1,7 @@
 import pytest
-
 from sqlalchemy.orm import Session
 
 from pawzzle import db
-
 from pawzzle.operations.answer import store_answer
 from pawzzle.operations.schemas import AnswerIn
 

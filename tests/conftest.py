@@ -6,8 +6,8 @@ from sqlalchemy.orm import Session
 from sqlalchemy.pool import StaticPool
 
 from pawzzle.assets import DATA_DIR_PATH
-from pawzzle.dependencies import get_session
 from pawzzle.db.init import init_db
+from pawzzle.dependencies import get_session
 from pawzzle.main import app
 
 

@@ -4,9 +4,9 @@ from pawzzle.db.dog import insert_dog
 from pawzzle.db.question import (
     BulkQuestionData,
     bulk_insert_questions,
+    insert_question,
     select_all_questions,
     select_question,
-    insert_question,
 )
 
 

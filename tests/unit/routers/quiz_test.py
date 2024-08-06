@@ -1,13 +1,13 @@
 import random
 
 import pytest
-from pytest import MonkeyPatch
 from fastapi.testclient import TestClient
+from pytest import MonkeyPatch
 from sqlalchemy.orm import Session
 
 from pawzzle import db
-from pawzzle.operations.schemas import QuestionIn
 from pawzzle.operations.question import generate_random_question
+from pawzzle.operations.schemas import QuestionIn
 
 
 @pytest.fixture(name="random_question", autouse=True)

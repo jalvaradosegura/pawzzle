@@ -1,9 +1,8 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
-from pawzzle.dependencies import get_session
 from pawzzle import operations
-
+from pawzzle.dependencies import get_session
 
 router = APIRouter()
 

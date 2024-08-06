@@ -1,5 +1,4 @@
 import pytest
-
 from sqlalchemy.orm import Session
 
 from pawzzle.db.answer import insert_answer

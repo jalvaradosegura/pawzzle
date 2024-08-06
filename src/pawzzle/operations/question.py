@@ -3,11 +3,7 @@ import random
 from sqlalchemy.orm import Session
 
 from pawzzle import db
-from pawzzle.operations.schemas import (
-    QuestionIn,
-    DogIn,
-    QuestionOut,
-)
+from pawzzle.operations.schemas import DogIn, QuestionIn, QuestionOut
 
 
 def generate_random_question(

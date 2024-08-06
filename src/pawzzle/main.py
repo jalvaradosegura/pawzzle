@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from pawzzle.assets import DATA_DIR_PATH
 from pawzzle.db.init import init_db
 from pawzzle.operations.dog import seed_dog_table
-from pawzzle.routers import answer, quiz, question
+from pawzzle.routers import answer, question, quiz
 from pawzzle.settings import Settings
 
 

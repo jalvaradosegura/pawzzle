@@ -9,8 +9,8 @@ from .dog import (
 from .models import Dog, Question, question_dog_association
 from .question import (
     BulkQuestionData,
-    insert_question,
     bulk_insert_questions,
+    insert_question,
     select_all_questions,
     select_question,
 )

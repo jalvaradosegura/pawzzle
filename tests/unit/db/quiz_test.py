@@ -3,8 +3,8 @@ from sqlalchemy.orm import Session
 
 from pawzzle.db.dog import insert_dog
 from pawzzle.db.models import Question
-from pawzzle.db.question import select_all_questions, insert_question
-from pawzzle.db.quiz import select_all_quizzes, select_quiz, insert_quiz
+from pawzzle.db.question import insert_question, select_all_questions
+from pawzzle.db.quiz import insert_quiz, select_all_quizzes, select_quiz
 
 
 @pytest.fixture(name="seed_questions", autouse=True)

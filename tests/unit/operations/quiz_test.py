@@ -2,9 +2,9 @@ import pytest
 from sqlalchemy.orm import Session
 
 from pawzzle import db
-from pawzzle.operations.schemas import QuestionIn, QuizOut
 from pawzzle.operations.question import generate_random_question
 from pawzzle.operations.quiz import store_quiz
+from pawzzle.operations.schemas import QuestionIn, QuizOut
 
 
 @pytest.fixture(name="list_of_questions")
