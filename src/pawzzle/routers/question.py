@@ -18,7 +18,7 @@ def get_random_question(
 
 
 @router.post("/question", status_code=201)
-def store_question(
+def post_question(
     question: QuestionIn, session: Session = Depends(get_session)
 ) -> QuestionOut:
     return operations.store_question(session, question)
@@ -38,7 +38,7 @@ def get_random_questions(
 
 
 @router.post("/questions", status_code=201)
-def store_questions(
+def post_questions(
     questions: list[QuestionIn], session: Session = Depends(get_session)
 ) -> None:
     operations.store_questions(session, questions)

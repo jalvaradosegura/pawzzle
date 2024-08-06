@@ -10,7 +10,7 @@ router = APIRouter()
 
 
 @router.post("/answer", status_code=201)
-def store_answer(
+def post_answer(
     answer_schema: AnswerIn, session: Session = Depends(get_session)
 ) -> AnswerOut:
     answer = operations.store_answer(session, answer_schema)
