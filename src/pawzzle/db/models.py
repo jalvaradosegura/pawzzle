@@ -62,6 +62,13 @@ class Question(Base):
 
     answers: Mapped[list["Answer"]] = relationship()
 
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "text": self.text,
+            "correct_dog": self.correct_dog.to_dict(),
+            "alternatives": [a.to_dict() for a in self.alternatives],
+        }
+
 
 class Quiz(Base):
     __tablename__ = "quiz"

@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from pawzzle.assets import DATA_DIR_PATH
 from pawzzle.db.init import init_db
 from pawzzle.operations.dog import seed_dog_table
-from pawzzle.routers import answer, question
+from pawzzle.routers import answer, quiz, question
 from pawzzle.settings import Settings
 
 
@@ -20,5 +20,6 @@ async def lifespan(app: FastAPI):  # pragma: no cover
 
 
 app = FastAPI(lifespan=lifespan)
-app.include_router(question.router)
 app.include_router(answer.router)
+app.include_router(quiz.router)
+app.include_router(question.router)

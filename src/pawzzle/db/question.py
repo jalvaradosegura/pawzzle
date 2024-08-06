@@ -16,13 +16,19 @@ def insert_question(
 
 
 def select_all_questions(
-    session: Session, *, limit: None | int = None, offset: None | int = None
+    session: Session,
+    *,
+    limit: None | int = None,
+    offset: None | int = None,
+    filter_: list[int] | set[int] | None = None,
 ) -> list[Question]:
     query = session.query(Question)
     if limit:
         query = query.limit(limit)
     if offset:
         query = query.offset(offset)
+    if filter_:
+        query = query.where(Question.id.in_(filter_))
 
     return query.all()
 
@@ -42,7 +48,9 @@ class AssociationData(TypedDict):
     dog_id: int
 
 
-def bulk_insert_questions(session: Session, questions_data: list[BulkQuestionData]):
+def bulk_insert_questions(
+    session: Session, questions_data: list[BulkQuestionData]
+) -> list[int]:
     stmt = insert(Question).values(
         [
             {"text": data["text"], "correct_dog_id": data["correct_dog_id"]}
@@ -62,3 +70,5 @@ def bulk_insert_questions(session: Session, questions_data: list[BulkQuestionDat
 
     session.execute(insert(question_dog_association), association_data)
     session.commit()
+
+    return inserted_ids

@@ -34,3 +34,8 @@ class AnswerIn(Answer):
 class AnswerOut(Answer):
     id: int
     correct: bool
+
+
+class QuizOut(BaseModel):
+    id: int
+    questions: list[QuestionOut]
