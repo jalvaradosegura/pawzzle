@@ -34,7 +34,7 @@ def test_insert_quiz(session: Session, questions: list[Question]):
     quiz = insert_quiz(session, questions)
 
     assert quiz.id == 1
-    assert len(quiz.questions_as_alternative) == 2
+    assert len(quiz.questions) == 2
 
 
 def test_select_quiz(session: Session, questions: list[Question]):
@@ -43,7 +43,7 @@ def test_select_quiz(session: Session, questions: list[Question]):
     quiz = select_quiz(session, 1)
 
     assert quiz.id == 1
-    assert len(quiz.questions_as_alternative) == 2
+    assert len(quiz.questions) == 2
 
 
 def test_get_all_quizzes(session: Session, questions: list[Question]):

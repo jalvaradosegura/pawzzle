@@ -20,5 +20,5 @@ def store_quiz(session: Session, list_of_questions: list[QuestionIn]) -> QuizOut
 
     return QuizOut(
         id=quiz.id,
-        questions=[QuestionOut(**q.to_dict()) for q in quiz.questions_as_alternative],
+        questions=[QuestionOut(**q.to_dict()) for q in quiz.questions],
     )

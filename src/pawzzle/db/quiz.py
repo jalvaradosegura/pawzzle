@@ -20,7 +20,7 @@ def select_quiz(session: Session, id: int) -> Quiz:
 
 
 def insert_quiz(session: Session, questions: list[Question]) -> Quiz:
-    quiz = Quiz(questions_as_alternative=questions)
+    quiz = Quiz(questions=questions)
     session.add(quiz)
     session.commit()
     return quiz

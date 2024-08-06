@@ -57,7 +57,7 @@ class Question(Base):
     )
 
     quizzes: Mapped[list["Quiz"]] = relationship(
-        secondary=quiz_question_association, back_populates="questions_as_alternative"
+        secondary=quiz_question_association, back_populates="questions"
     )
 
     answers: Mapped[list["Answer"]] = relationship()
@@ -74,7 +74,7 @@ class Quiz(Base):
     __tablename__ = "quiz"
     id: Mapped[int] = mapped_column(primary_key=True)
 
-    questions_as_alternative: Mapped[list["Question"]] = relationship(
+    questions: Mapped[list["Question"]] = relationship(
         secondary=quiz_question_association, back_populates="quizzes"
     )
 
