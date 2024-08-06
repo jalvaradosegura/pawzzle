@@ -5,26 +5,25 @@ from pytest import MonkeyPatch
 from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
 
-from pawzzle.db.dog import insert_dog
-from pawzzle.db.models import Dog
+from pawzzle import db
 from pawzzle.operations.schemas import QuestionIn
 from pawzzle.operations.question import generate_random_question
 
 
 @pytest.fixture(name="random_question", autouse=True)
 def random_question_fixture(session: Session, monkeypatch: MonkeyPatch):
-    dog_1 = insert_dog(session, "Poodle")
-    dog_2 = insert_dog(session, "Pug")
-    dog_3 = insert_dog(session, "Husky")
+    dog_1 = db.insert_dog(session, "Poodle")
+    dog_2 = db.insert_dog(session, "Pug")
+    dog_3 = db.insert_dog(session, "Husky")
     random.seed(1)
 
     def mocked_randomly_get_n_dogs(
         alternatives_amount: int, session: Session
-    ) -> list[Dog]:
+    ) -> list[db.Dog]:
         return [dog_1, dog_2, dog_3]
 
     monkeypatch.setattr(
-        "pawzzle.operations.question.randomly_select_n_dogs",
+        "pawzzle.operations.question.db.randomly_select_n_dogs",
         mocked_randomly_get_n_dogs,
     )
 

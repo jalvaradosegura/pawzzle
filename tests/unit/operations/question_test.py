@@ -4,9 +4,7 @@ import pytest
 from pytest import MonkeyPatch
 from sqlalchemy.orm import Session
 
-from pawzzle.db.dog import insert_dog
-from pawzzle.db.models import Dog
-from pawzzle.db.question import select_question, select_all_questions
+from pawzzle import db
 from pawzzle.operations.question import (
     generate_random_question,
     store_question,
@@ -16,20 +14,20 @@ from pawzzle.operations.question import (
 
 @pytest.fixture(name="random_question", autouse=True)
 def random_question_fixture(session: Session, monkeypatch: MonkeyPatch):
-    dog_1 = insert_dog(session, "Poodle")
-    dog_2 = insert_dog(session, "Pug")
-    dog_3 = insert_dog(session, "Husky")
-    insert_dog(session, "Corgi")
-    insert_dog(session, "Samoyed")
+    dog_1 = db.insert_dog(session, "Poodle")
+    dog_2 = db.insert_dog(session, "Pug")
+    dog_3 = db.insert_dog(session, "Husky")
+    db.insert_dog(session, "Corgi")
+    db.insert_dog(session, "Samoyed")
     random.seed(1)
 
     def mocked_randomly_get_n_dogs(
         alternatives_amount: int, session: Session
-    ) -> list[Dog]:
+    ) -> list[db.Dog]:
         return [dog_1, dog_2, dog_3]
 
     monkeypatch.setattr(
-        "pawzzle.operations.question.randomly_select_n_dogs",
+        "pawzzle.operations.question.db.randomly_select_n_dogs",
         mocked_randomly_get_n_dogs,
     )
 
@@ -49,7 +47,7 @@ def test_store_question(session: Session):
     question = generate_random_question(session, alternatives_amount=3)
     store_question(session, question)
 
-    stored_question = select_question(session, 1)
+    stored_question = db.select_question(session, 1)
 
     assert stored_question.text == "Which one is a Poodle"
     assert stored_question.correct_dog.breed == "Poodle"
@@ -64,6 +62,6 @@ def test_store_questions(session: Session) -> None:
     question_3 = generate_random_question(session, alternatives_amount=3)
 
     store_questions(session, [question_1, question_2, question_3])
-    all_questions = select_all_questions(session)
+    all_questions = db.select_all_questions(session)
 
     assert len(all_questions) == 3

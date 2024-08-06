@@ -4,23 +4,21 @@ from fastapi.testclient import TestClient
 
 from sqlalchemy.orm import Session
 
-from pawzzle.db.dog import insert_dog
-from pawzzle.db.models import Question
-from pawzzle.db.question import insert_question
-from pawzzle.operations.schemas import AnswerIn
+from pawzzle import db
+from pawzzle import operations
 
 
 @pytest.fixture(name="question")
-def question_fixture(session: Session) -> Question:
-    poodle = insert_dog(session, "Poodle")
-    pug = insert_dog(session, "Pug")
-    insert_question(
+def question_fixture(session: Session) -> db.Question:
+    poodle = db.insert_dog(session, "Poodle")
+    pug = db.insert_dog(session, "Pug")
+    db.insert_question(
         session,
         text="Which one is a Poodle?",
         alternatives=[poodle, pug],
         correct_dog=poodle,
     )
-    question = insert_question(
+    question = db.insert_question(
         session,
         text="Which one is a Pug?",
         alternatives=[poodle, pug],
@@ -30,8 +28,8 @@ def question_fixture(session: Session) -> Question:
     return question
 
 
-def test_store_answer_correct(client: TestClient, question: Question):
-    schema = AnswerIn(
+def test_store_answer_correct(client: TestClient, question: db.Question):
+    schema = operations.AnswerIn(
         dog_id=2,
         question_id=question.id,
     )

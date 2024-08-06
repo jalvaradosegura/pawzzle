@@ -4,42 +4,44 @@ import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
 
-from pawzzle.db.dog import insert_dog
-from pawzzle.db.models import question_dog_association
-from pawzzle.db.question import select_all_questions
-from pawzzle.operations.question import generate_random_questions
-from pawzzle.operations.schemas import (
-    DogIn,
-    QuestionIn,
-    QuestionOut,
-)
+from pawzzle import db
+from pawzzle import operations
+
+# from pawzzle.operations.question import generate_random_questions
+# from pawzzle.operations.schemas import (
+# DogIn,
+# QuestionIn,
+# QuestionOut,
+# )
 
 
 @pytest.fixture(name="question_base")
-def question_base_fixture(session: Session) -> QuestionIn:
-    dog_1 = insert_dog(session, "Poodle")
-    dog_2 = insert_dog(session, "Pug")
-    dog_3 = insert_dog(session, "Husky")
-    dog_4 = insert_dog(session, "Corgi")
-    insert_dog(session, "Samoyed")
+def question_base_fixture(session: Session) -> operations.QuestionIn:
+    dog_1 = db.insert_dog(session, "Poodle")
+    dog_2 = db.insert_dog(session, "Pug")
+    dog_3 = db.insert_dog(session, "Husky")
+    dog_4 = db.insert_dog(session, "Corgi")
+    db.insert_dog(session, "Samoyed")
     alternatives = [dog_1, dog_2, dog_3, dog_4]
-    return QuestionIn(
+    return operations.QuestionIn(
         text="Which one is a Poodle",
-        correct_dog=DogIn(**dog_1.to_dict()),
-        alternatives=[DogIn(**dog.to_dict()) for dog in alternatives],
+        correct_dog=operations.DogIn(**dog_1.to_dict()),
+        alternatives=[operations.DogIn(**dog.to_dict()) for dog in alternatives],
     )
 
 
 @pytest.fixture(name="question_schema")
-def question_schema_fixture(question_base: QuestionIn) -> QuestionOut:
-    return QuestionOut(id=None, **question_base.model_dump())
+def question_schema_fixture(
+    question_base: operations.QuestionIn,
+) -> operations.QuestionOut:
+    return operations.QuestionOut(id=None, **question_base.model_dump())
 
 
 @patch("pawzzle.routers.question.operations.generate_random_question")
 def test_get_random_question(
     mocked_generate_random_question: MagicMock,
     client: TestClient,
-    question_schema: QuestionOut,
+    question_schema: operations.QuestionOut,
 ):
     mocked_generate_random_question.return_value = question_schema
     response = client.get("/question")
@@ -86,7 +88,7 @@ def test_get_random_question(
 def test_get_random_questions(
     mocked_generate_random_question: MagicMock,
     client: TestClient,
-    question_schema: QuestionOut,
+    question_schema: operations.QuestionOut,
 ):
     mocked_generate_random_question.return_value = question_schema
     response = client.get("/questions")
@@ -100,7 +102,7 @@ def test_get_random_questions(
     assert response.json()[4]["text"] == "Which one is a Poodle"
 
 
-def test_store_question(question_base: QuestionIn, client: TestClient):
+def test_store_question(question_base: operations.QuestionIn, client: TestClient):
     response = client.post("/question", json=question_base.model_dump())
 
     assert response.status_code == 201
@@ -143,19 +145,19 @@ def test_store_question(question_base: QuestionIn, client: TestClient):
 
 
 def test_store_questions(session: Session, client: TestClient):
-    insert_dog(session, "Poodle")
-    insert_dog(session, "Pug")
-    insert_dog(session, "Husky")
-    insert_dog(session, "Corgi")
-    random_questions = generate_random_questions(
+    db.insert_dog(session, "Poodle")
+    db.insert_dog(session, "Pug")
+    db.insert_dog(session, "Husky")
+    db.insert_dog(session, "Corgi")
+    random_questions = operations.generate_random_questions(
         session, alternatives_amount=4, questions_amount=4
     )
 
     response = client.post(
         "/questions", json=[question.model_dump() for question in random_questions]
     )
-    all_questions = select_all_questions(session)
-    associations = session.query(question_dog_association).all()
+    all_questions = db.select_all_questions(session)
+    associations = session.query(db.question_dog_association).all()
 
     assert response.status_code == 201
     assert len(all_questions) == 4

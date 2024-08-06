@@ -1,12 +1,10 @@
 from sqlalchemy.orm import Session
-from pawzzle.db.question import BulkQuestionData, select_all_questions
-from pawzzle.db.quiz import insert_quiz
-from pawzzle.operations.question import bulk_insert_questions
+from pawzzle import db
 from pawzzle.operations.schemas import QuestionIn, QuestionOut, QuizOut
 
 
 def store_quiz(session: Session, list_of_questions: list[QuestionIn]) -> QuizOut:
-    questions_to_bulk: list[BulkQuestionData] = [
+    questions_to_bulk: list[db.BulkQuestionData] = [
         {
             "text": question.text,
             "alternatives": [alternative.id for alternative in question.alternatives],
@@ -14,9 +12,9 @@ def store_quiz(session: Session, list_of_questions: list[QuestionIn]) -> QuizOut
         }
         for question in list_of_questions
     ]
-    questions_id = bulk_insert_questions(session, questions_to_bulk)
-    questions = select_all_questions(session, filter_=questions_id)
-    quiz = insert_quiz(session, questions)
+    questions_id = db.bulk_insert_questions(session, questions_to_bulk)
+    questions = db.select_all_questions(session, filter_=questions_id)
+    quiz = db.insert_quiz(session, questions)
 
     return QuizOut(
         id=quiz.id,
