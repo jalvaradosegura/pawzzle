@@ -64,6 +64,7 @@ class Question(Base):
 
     def to_dict(self) -> dict[str, Any]:
         return {
+            "id": self.id,
             "text": self.text,
             "correct_dog": self.correct_dog.to_dict(),
             "alternatives": [a.to_dict() for a in self.alternatives],

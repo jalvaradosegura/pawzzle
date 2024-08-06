@@ -11,5 +11,4 @@ router = APIRouter()
 def post_answer(
     answer_schema: operations.AnswerIn, session: Session = Depends(get_session)
 ) -> operations.AnswerOut:
-    answer = operations.store_answer(session, answer_schema)
-    return answer
+    return operations.store_answer(session, answer_schema)

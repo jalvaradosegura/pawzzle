@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 
 from pawzzle import db
 from pawzzle.operations.question import generate_random_question
-from pawzzle.operations.quiz import store_quiz
+from pawzzle.operations.quiz import get_quiz, store_quiz
 from pawzzle.operations.schemas import QuestionIn, QuizOut
 
 
@@ -23,3 +23,17 @@ def test_store_quiz(session: Session, list_of_questions: list[QuestionIn]):
     assert isinstance(quiz, QuizOut)
     assert len(quiz.questions) == 3
     assert len(quiz.questions[0].alternatives) == 3
+    assert len(quiz.questions[1].alternatives) == 3
+    assert len(quiz.questions[2].alternatives) == 3
+
+
+def test_get_quiz(session: Session, list_of_questions: list[QuestionIn]):
+    store_quiz(session, list_of_questions)
+
+    quiz = get_quiz(session, 1)
+
+    assert isinstance(quiz, QuizOut)
+    assert len(quiz.questions) == 3
+    assert len(quiz.questions[0].alternatives) == 3
+    assert len(quiz.questions[1].alternatives) == 3
+    assert len(quiz.questions[2].alternatives) == 3

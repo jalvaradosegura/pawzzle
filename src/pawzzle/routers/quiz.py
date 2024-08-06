@@ -13,3 +13,10 @@ def post_quiz(
     session: Session = Depends(get_session),
 ):
     return operations.store_quiz(session, list_of_questions)
+
+
+@router.get("/quiz/{quiz_id}")
+def get_quiz(
+    quiz_id: int, session: Session = Depends(get_session)
+) -> operations.QuizOut:
+    return operations.get_quiz(session, quiz_id)

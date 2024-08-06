@@ -14,4 +14,4 @@ from .question import (
     select_all_questions,
     select_question,
 )
-from .quiz import insert_quiz
+from .quiz import insert_quiz, select_quiz

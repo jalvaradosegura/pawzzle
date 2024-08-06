@@ -21,3 +21,11 @@ def store_quiz(session: Session, list_of_questions: list[QuestionIn]) -> QuizOut
         id=quiz.id,
         questions=[QuestionOut(**q.to_dict()) for q in quiz.questions],
     )
+
+
+def get_quiz(session: Session, id: int):
+    quiz = db.select_quiz(session, id)
+    return QuizOut(
+        id=quiz.id,
+        questions=[QuestionOut(**q.to_dict()) for q in quiz.questions],
+    )

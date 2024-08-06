@@ -56,7 +56,7 @@ def test_post_quiz(client: TestClient, list_of_questions: list[QuestionIn]):
                     {"id": 2, "breed": "Pug", "image_url": None, "info_url": None},
                     {"id": 3, "breed": "Husky", "image_url": None, "info_url": None},
                 ],
-                "id": None,
+                "id": 1,
             },
             {
                 "text": "Which one is a Husky",
@@ -71,7 +71,18 @@ def test_post_quiz(client: TestClient, list_of_questions: list[QuestionIn]):
                     {"id": 2, "breed": "Pug", "image_url": None, "info_url": None},
                     {"id": 3, "breed": "Husky", "image_url": None, "info_url": None},
                 ],
-                "id": None,
+                "id": 2,
             },
         ],
     }
+
+
+def test_get_quiz(client: TestClient, list_of_questions: list[QuestionIn]):
+    client.post("/quiz", json=[question.model_dump() for question in list_of_questions])
+
+    response = client.get("/quiz/1")
+
+    assert response.status_code == 200
+    assert response.json()["id"] == 1
+    assert len(response.json()["questions"]) == 2
+    assert len(response.json()["questions"][0]["alternatives"]) == 3
