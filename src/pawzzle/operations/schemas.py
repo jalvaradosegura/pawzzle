@@ -6,6 +6,7 @@ class DogIn(BaseModel):
     breed: str
     image_url: str | None
     info_url: str | None
+    img_name: str | None
 
 
 class Question(BaseModel):
