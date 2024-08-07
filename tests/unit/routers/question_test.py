@@ -6,13 +6,6 @@ from sqlalchemy.orm import Session
 
 from pawzzle import db, operations
 
-# from pawzzle.operations.question import generate_random_questions
-# from pawzzle.operations.schemas import (
-# DogIn,
-# QuestionIn,
-# QuestionOut,
-# )
-
 
 @pytest.fixture(name="question_base")
 def question_base_fixture(session: Session) -> operations.QuestionIn:
