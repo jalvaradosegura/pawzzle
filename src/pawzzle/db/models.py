@@ -29,6 +29,7 @@ class Dog(Base):
     breed: Mapped[str] = mapped_column(String(100))
     image_url: Mapped[str | None] = mapped_column(String(350), nullable=True)
     info_url: Mapped[str | None] = mapped_column(String(350), nullable=True)
+    img_name: Mapped[str | None] = mapped_column(String(350), nullable=True)
 
     questions_where_correct: Mapped[list["Question"]] = relationship()
 
