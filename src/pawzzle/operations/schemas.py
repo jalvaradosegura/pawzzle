@@ -37,6 +37,10 @@ class AnswerOut(Answer):
     correct: bool
 
 
+class AnswersIn(BaseModel):
+    answers: list[AnswerIn]
+
+
 class QuizOut(BaseModel):
     id: int
     questions: list[QuestionOut]

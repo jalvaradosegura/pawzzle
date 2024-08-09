@@ -6,4 +6,12 @@ from .question import (
     store_questions,
 )
 from .quiz import get_quiz, store_quiz
-from .schemas import AnswerIn, AnswerOut, DogIn, QuestionIn, QuestionOut, QuizOut
+from .schemas import (
+    AnswerIn,
+    AnswerOut,
+    AnswersIn,
+    DogIn,
+    QuestionIn,
+    QuestionOut,
+    QuizOut,
+)
