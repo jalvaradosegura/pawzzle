@@ -5,4 +5,5 @@ class Settings(BaseSettings):
     db_connection_url: str = "sqlite:///:memory:"
     db_echo: bool = False
     dogs_file: str = ""
+    origins: str = "http://localhost:3000"
     model_config = SettingsConfigDict(env_file=".env")

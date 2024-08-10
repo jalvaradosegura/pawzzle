@@ -1,6 +1,7 @@
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 
 from pawzzle.assets import DATA_DIR_PATH
@@ -10,9 +11,13 @@ from pawzzle.routers import answer, question, quiz
 from pawzzle.settings import Settings
 
 
+settings = Settings()
+origins = [*settings.origins.split(",")]
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):  # pragma: no cover
-    settings = Settings()
+
     engine = init_db(settings.db_connection_url, echo=settings.db_echo)  # type: ignore
     with Session(engine) as session:
         seed_dog_table(session, DATA_DIR_PATH / settings.dogs_file)
@@ -20,6 +25,9 @@ async def lifespan(app: FastAPI):  # pragma: no cover
 
 
 app = FastAPI(lifespan=lifespan)
+app.add_middleware(
+    CORSMiddleware, allow_origins=origins, allow_methods=["*"], allow_headers=["*"]
+)
 app.include_router(answer.router)
 app.include_router(quiz.router)
 app.include_router(question.router)
