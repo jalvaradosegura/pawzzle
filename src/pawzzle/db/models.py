@@ -47,7 +47,7 @@ class Dog(Base):
 class Question(Base):
     __tablename__ = "question"
     id: Mapped[int] = mapped_column(primary_key=True)
-    text: Mapped[str] = mapped_column(String(50))
+    text: Mapped[str] = mapped_column(String(300))
 
     correct_dog_id: Mapped[int] = mapped_column(ForeignKey("dog.id"))
     correct_dog: Mapped["Dog"] = relationship(back_populates="questions_where_correct")
