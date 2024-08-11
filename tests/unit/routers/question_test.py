@@ -44,7 +44,6 @@ def test_get_random_question(
         "correct_dog": {
             "breed": "Poodle",
             "id": 1,
-            "image_url": None,
             "img_name": None,
             "info_url": None,
         },
@@ -52,28 +51,24 @@ def test_get_random_question(
             {
                 "breed": "Poodle",
                 "id": 1,
-                "image_url": None,
                 "img_name": None,
                 "info_url": None,
             },
             {
                 "breed": "Pug",
                 "id": 2,
-                "image_url": None,
                 "img_name": None,
                 "info_url": None,
             },
             {
                 "breed": "Husky",
                 "id": 3,
-                "image_url": None,
                 "img_name": None,
                 "info_url": None,
             },
             {
                 "breed": "Corgi",
                 "id": 4,
-                "image_url": None,
                 "img_name": None,
                 "info_url": None,
             },
@@ -109,7 +104,6 @@ def test_store_question(question_base: operations.QuestionIn, client: TestClient
         "correct_dog": {
             "breed": "Poodle",
             "id": 1,
-            "image_url": None,
             "img_name": None,
             "info_url": None,
         },
@@ -117,28 +111,24 @@ def test_store_question(question_base: operations.QuestionIn, client: TestClient
             {
                 "breed": "Poodle",
                 "id": 1,
-                "image_url": None,
                 "img_name": None,
                 "info_url": None,
             },
             {
                 "breed": "Pug",
                 "id": 2,
-                "image_url": None,
                 "img_name": None,
                 "info_url": None,
             },
             {
                 "breed": "Husky",
                 "id": 3,
-                "image_url": None,
                 "img_name": None,
                 "info_url": None,
             },
             {
                 "breed": "Corgi",
                 "id": 4,
-                "image_url": None,
                 "img_name": None,
                 "info_url": None,
             },

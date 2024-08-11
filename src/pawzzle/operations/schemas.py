@@ -4,7 +4,6 @@ from pydantic import BaseModel
 class DogIn(BaseModel):
     id: int
     breed: str
-    image_url: str | None
     info_url: str | None
     img_name: str | None
 

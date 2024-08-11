@@ -48,7 +48,6 @@ def test_post_quiz(client: TestClient, list_of_questions: list[QuestionIn]):
                 "correct_dog": {
                     "id": 1,
                     "breed": "Poodle",
-                    "image_url": None,
                     "img_name": None,
                     "info_url": None,
                 },
@@ -56,21 +55,18 @@ def test_post_quiz(client: TestClient, list_of_questions: list[QuestionIn]):
                     {
                         "id": 1,
                         "breed": "Poodle",
-                        "image_url": None,
                         "img_name": None,
                         "info_url": None,
                     },
                     {
                         "id": 2,
                         "breed": "Pug",
-                        "image_url": None,
                         "img_name": None,
                         "info_url": None,
                     },
                     {
                         "id": 3,
                         "breed": "Husky",
-                        "image_url": None,
                         "img_name": None,
                         "info_url": None,
                     },
@@ -82,7 +78,6 @@ def test_post_quiz(client: TestClient, list_of_questions: list[QuestionIn]):
                 "correct_dog": {
                     "id": 3,
                     "breed": "Husky",
-                    "image_url": None,
                     "img_name": None,
                     "info_url": None,
                 },
@@ -90,21 +85,18 @@ def test_post_quiz(client: TestClient, list_of_questions: list[QuestionIn]):
                     {
                         "id": 1,
                         "breed": "Poodle",
-                        "image_url": None,
                         "img_name": None,
                         "info_url": None,
                     },
                     {
                         "id": 2,
                         "breed": "Pug",
-                        "image_url": None,
                         "img_name": None,
                         "info_url": None,
                     },
                     {
                         "id": 3,
                         "breed": "Husky",
-                        "image_url": None,
                         "img_name": None,
                         "info_url": None,
                     },

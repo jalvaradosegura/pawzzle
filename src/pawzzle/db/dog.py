@@ -43,8 +43,8 @@ def randomly_select_n_dogs(session: Session, n: int) -> list[Dog]:
 
 class BulkDogData(TypedDict):
     breed: str
-    image_url: str
     info_url: str
+    img_name: str
 
 
 def bulk_insert_dogs(session: Session, dogs_data: list[BulkDogData]):
