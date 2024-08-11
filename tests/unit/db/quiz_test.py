@@ -31,14 +31,14 @@ def questions_fixture(session: Session) -> list[Question]:
 
 
 def test_insert_quiz(session: Session, questions: list[Question]):
-    quiz = insert_quiz(session, questions)
+    quiz = insert_quiz(session, questions, "2024-08-23")
 
     assert quiz.id == 1
     assert len(quiz.questions) == 2
 
 
 def test_select_quiz(session: Session, questions: list[Question]):
-    insert_quiz(session, questions)
+    insert_quiz(session, questions, "2024-08-23")
 
     quiz = select_quiz(session, 1)
 
@@ -47,9 +47,9 @@ def test_select_quiz(session: Session, questions: list[Question]):
 
 
 def test_get_all_quizzes(session: Session, questions: list[Question]):
-    insert_quiz(session, questions)
-    insert_quiz(session, questions)
-    insert_quiz(session, questions)
+    insert_quiz(session, questions, "2024-08-23")
+    insert_quiz(session, questions, "2024-08-23")
+    insert_quiz(session, questions, "2024-08-23")
 
     quizzes = select_all_quizzes(session)
 
@@ -58,11 +58,11 @@ def test_get_all_quizzes(session: Session, questions: list[Question]):
 
 def test_select_all_quizzes_limit(session: Session, questions: list[Question]):
     q = select_all_questions(session)
-    insert_quiz(session, q)
+    insert_quiz(session, q, "2024-08-23")
     q = select_all_questions(session)
-    insert_quiz(session, q)
+    insert_quiz(session, q, "2024-08-23")
     q = select_all_questions(session)
-    insert_quiz(session, q)
+    insert_quiz(session, q, "2024-08-23")
 
     quizzes = select_all_quizzes(session, limit=2)
 
@@ -71,11 +71,11 @@ def test_select_all_quizzes_limit(session: Session, questions: list[Question]):
 
 def test_select_all_quizzes_offset(session: Session, questions: list[Question]):
     q = select_all_questions(session)
-    insert_quiz(session, q)
+    insert_quiz(session, q, "2024-08-23")
     q = select_all_questions(session)
-    insert_quiz(session, q)
+    insert_quiz(session, q, "2024-08-23")
     q = select_all_questions(session)
-    insert_quiz(session, q)
+    insert_quiz(session, q, "2024-08-23")
 
     quizzes = select_all_quizzes(session, offset=1)
 
@@ -86,11 +86,11 @@ def test_select_all_quizzes_limit_and_offset(
     session: Session, questions: list[Question]
 ):
     q = select_all_questions(session)
-    insert_quiz(session, q)
+    insert_quiz(session, q, "2024-08-23")
     q = select_all_questions(session)
-    insert_quiz(session, q)
+    insert_quiz(session, q, "2024-08-23")
     q = select_all_questions(session)
-    insert_quiz(session, q)
+    insert_quiz(session, q, "2024-08-23")
 
     quizzes = select_all_quizzes(session, limit=1, offset=2)
 

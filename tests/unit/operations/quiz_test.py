@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from pawzzle import db
 from pawzzle.operations.question import generate_random_question
 from pawzzle.operations.quiz import get_quiz, store_quiz
-from pawzzle.operations.schemas import QuestionIn, QuizOut
+from pawzzle.operations.schemas import QuestionIn, QuizIn, QuizOut
 
 
 @pytest.fixture(name="list_of_questions")
@@ -19,7 +19,10 @@ def list_of_questions_fixture(session: Session) -> list[QuestionIn]:
 
 
 def test_store_quiz(session: Session, list_of_questions: list[QuestionIn]):
-    quiz = store_quiz(session, list_of_questions)
+    quiz_in = QuizIn(questions=list_of_questions, target_date="2024-08-23")
+
+    quiz = store_quiz(session, quiz_in)
+
     assert isinstance(quiz, QuizOut)
     assert len(quiz.questions) == 3
     assert len(quiz.questions[0].alternatives) == 3
@@ -28,7 +31,8 @@ def test_store_quiz(session: Session, list_of_questions: list[QuestionIn]):
 
 
 def test_get_quiz(session: Session, list_of_questions: list[QuestionIn]):
-    store_quiz(session, list_of_questions)
+    quiz_in = QuizIn(questions=list_of_questions, target_date="2024-08-23")
+    store_quiz(session, quiz_in)
 
     quiz = get_quiz(session, 1)
 

@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 
 from pawzzle import db
 from pawzzle.operations.question import generate_random_question
-from pawzzle.operations.schemas import QuestionIn
+from pawzzle.operations.schemas import QuestionIn, QuizIn
 
 
 @pytest.fixture(name="random_question", autouse=True)
@@ -36,12 +36,12 @@ def list_of_questions_fixture(session: Session) -> list[QuestionIn]:
 
 
 def test_post_quiz(client: TestClient, list_of_questions: list[QuestionIn]):
-    response = client.post(
-        "/quiz", json=[question.model_dump() for question in list_of_questions]
-    )
+    quiz_in = QuizIn(target_date="2024-08-23", questions=list_of_questions)
+    response = client.post("/quiz", json=quiz_in.model_dump())
     assert response.status_code == 201
     assert response.json() == {
         "id": 1,
+        "target_date": "2024-08-23",
         "questions": [
             {
                 "text": "Which one is a Poodle",
@@ -108,7 +108,8 @@ def test_post_quiz(client: TestClient, list_of_questions: list[QuestionIn]):
 
 
 def test_get_quiz(client: TestClient, list_of_questions: list[QuestionIn]):
-    client.post("/quiz", json=[question.model_dump() for question in list_of_questions])
+    quiz_in = QuizIn(target_date="2024-08-23", questions=list_of_questions)
+    client.post("/quiz", json=quiz_in.model_dump())
 
     response = client.get("/quiz/1")
 

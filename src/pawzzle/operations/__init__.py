@@ -13,5 +13,6 @@ from .schemas import (
     DogIn,
     QuestionIn,
     QuestionOut,
+    QuizIn,
     QuizOut,
 )

@@ -74,6 +74,7 @@ class Question(Base):
 class Quiz(Base):
     __tablename__ = "quiz"
     id: Mapped[int] = mapped_column(primary_key=True)
+    target_date: Mapped[str] = mapped_column(String(50))
 
     questions: Mapped[list["Question"]] = relationship(
         secondary=quiz_question_association, back_populates="quizzes"

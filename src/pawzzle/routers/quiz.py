@@ -9,10 +9,10 @@ router = APIRouter()
 
 @router.post("/quiz", status_code=201)
 def post_quiz(
-    list_of_questions: list[operations.QuestionIn],
+    quiz_in: operations.QuizIn,
     session: Session = Depends(get_session),
 ):
-    return operations.store_quiz(session, list_of_questions)
+    return operations.store_quiz(session, quiz_in)
 
 
 @router.get("/quiz/{quiz_id}")

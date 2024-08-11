@@ -40,6 +40,14 @@ class AnswersIn(BaseModel):
     answers: list[AnswerIn]
 
 
-class QuizOut(BaseModel):
+class Quiz(BaseModel):
+    target_date: str
+
+
+class QuizIn(Quiz):
+    questions: list[QuestionIn]
+
+
+class QuizOut(Quiz):
     id: int
     questions: list[QuestionOut]

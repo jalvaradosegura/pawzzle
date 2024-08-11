@@ -19,8 +19,8 @@ def select_quiz(session: Session, id: int) -> Quiz:
     return session.get_one(Quiz, id)
 
 
-def insert_quiz(session: Session, questions: list[Question]) -> Quiz:
-    quiz = Quiz(questions=questions)
+def insert_quiz(session: Session, questions: list[Question], target_date: str) -> Quiz:
+    quiz = Quiz(questions=questions, target_date=target_date)
     session.add(quiz)
     session.commit()
     return quiz
