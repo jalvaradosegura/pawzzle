@@ -1,6 +1,8 @@
+from collections.abc import Callable
 from contextlib import asynccontextmanager
+from typing import Any
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 
@@ -31,3 +33,15 @@ app.add_middleware(
 app.include_router(answer.router)
 app.include_router(quiz.router)
 app.include_router(question.router)
+
+
+@app.middleware("http")
+async def authenticate_request(request: Request, call_next: Callable[[Request], Any]):
+    if (
+        "api-key" not in request.headers
+        or request.headers["api-key"] != settings.api_key
+    ):
+        raise HTTPException(status.HTTP_401_UNAUTHORIZED, "You are not authorized")
+
+    response = await call_next(request)
+    return response

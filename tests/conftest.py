@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import pytest
+from pytest import MonkeyPatch
 from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
 from sqlalchemy.pool import StaticPool
@@ -9,6 +10,7 @@ from pawzzle.assets import DATA_DIR_PATH
 from pawzzle.db.init import init_db
 from pawzzle.dependencies import get_session
 from pawzzle.main import app
+from pawzzle.settings import Settings
 
 
 @pytest.fixture(name="session")
@@ -24,13 +26,17 @@ def session_fixture():
 
 
 @pytest.fixture(name="client")
-def client_fixture(session: Session):
+def client_fixture(session: Session, monkeypatch: MonkeyPatch):
     def get_session_override():
         return session
 
     app.dependency_overrides[get_session] = get_session_override
 
     client = TestClient(app)
+
+    settings = Settings()
+    client.headers.update({"api-key": settings.api_key})
+
     yield client
     app.dependency_overrides.clear()
 
