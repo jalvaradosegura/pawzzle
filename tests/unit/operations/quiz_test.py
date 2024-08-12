@@ -1,9 +1,17 @@
+from datetime import datetime
+from unittest.mock import MagicMock, Mock, patch
+
 import pytest
 from sqlalchemy.orm import Session
 
 from pawzzle import db
 from pawzzle.operations.question import generate_random_question
-from pawzzle.operations.quiz import get_quiz, store_quiz
+from pawzzle.operations.quiz import (
+    get_quiz,
+    get_quiz_by_date,
+    get_todays_quiz,
+    store_quiz,
+)
 from pawzzle.operations.schemas import QuestionIn, QuizIn, QuizOut
 
 
@@ -37,6 +45,39 @@ def test_get_quiz(session: Session, list_of_questions: list[QuestionIn]):
     quiz = get_quiz(session, 1)
 
     assert isinstance(quiz, QuizOut)
+    assert len(quiz.questions) == 3
+    assert len(quiz.questions[0].alternatives) == 3
+    assert len(quiz.questions[1].alternatives) == 3
+    assert len(quiz.questions[2].alternatives) == 3
+
+
+def test_get_quiz_by_date(session: Session, list_of_questions: list[QuestionIn]):
+    quiz_in = QuizIn(questions=list_of_questions, target_date="2024-08-23")
+    store_quiz(session, quiz_in)
+
+    quiz = get_quiz_by_date(session, "2024-08-23")
+
+    assert isinstance(quiz, QuizOut)
+    assert len(quiz.questions) == 3
+    assert len(quiz.questions[0].alternatives) == 3
+    assert len(quiz.questions[1].alternatives) == 3
+    assert len(quiz.questions[2].alternatives) == 3
+
+
+@patch("pawzzle.operations.quiz.datetime")
+def test_get_todays_quiz(
+    mocked_datetime_now: MagicMock,
+    session: Session,
+    list_of_questions: list[QuestionIn],
+):
+    mocked_datetime_now.now = Mock(return_value=datetime(2024, 8, 23))
+    quiz_in = QuizIn(questions=list_of_questions, target_date="2024-08-23")
+    store_quiz(session, quiz_in)
+
+    quiz = get_todays_quiz(session)
+
+    assert isinstance(quiz, QuizOut)
+    assert quiz.target_date == "2024-08-23"
     assert len(quiz.questions) == 3
     assert len(quiz.questions[0].alternatives) == 3
     assert len(quiz.questions[1].alternatives) == 3

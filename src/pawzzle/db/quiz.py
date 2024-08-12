@@ -19,6 +19,10 @@ def select_quiz(session: Session, id: int) -> Quiz:
     return session.get_one(Quiz, id)
 
 
+def select_quiz_by_date(session: Session, date: str):
+    return session.query(Quiz).filter(Quiz.target_date == date).one()
+
+
 def insert_quiz(session: Session, questions: list[Question], target_date: str) -> Quiz:
     quiz = Quiz(questions=questions, target_date=target_date)
     session.add(quiz)

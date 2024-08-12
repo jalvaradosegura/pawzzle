@@ -4,7 +4,12 @@ from sqlalchemy.orm import Session
 from pawzzle.db.dog import insert_dog
 from pawzzle.db.models import Question
 from pawzzle.db.question import insert_question, select_all_questions
-from pawzzle.db.quiz import insert_quiz, select_all_quizzes, select_quiz
+from pawzzle.db.quiz import (
+    insert_quiz,
+    select_all_quizzes,
+    select_quiz,
+    select_quiz_by_date,
+)
 
 
 @pytest.fixture(name="seed_questions", autouse=True)
@@ -95,3 +100,12 @@ def test_select_all_quizzes_limit_and_offset(
     quizzes = select_all_quizzes(session, limit=1, offset=2)
 
     assert len(quizzes) == 1
+
+
+def test_select_quiz_by_date(session: Session, questions: list[Question]):
+    insert_quiz(session, questions, "2024-08-23")
+
+    quiz = select_quiz_by_date(session, "2024-08-23")
+
+    assert quiz.id == 1
+    assert len(quiz.questions) == 2

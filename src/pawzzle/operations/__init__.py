@@ -5,7 +5,7 @@ from .question import (
     store_question,
     store_questions,
 )
-from .quiz import get_quiz, store_quiz
+from .quiz import get_quiz, get_quiz_by_date, get_todays_quiz, store_quiz
 from .schemas import (
     AnswerIn,
     AnswerOut,

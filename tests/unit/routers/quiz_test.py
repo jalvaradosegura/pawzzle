@@ -1,4 +1,6 @@
 import random
+from datetime import datetime
+from unittest.mock import MagicMock, Mock, patch
 
 import pytest
 from fastapi.testclient import TestClient
@@ -135,3 +137,21 @@ def test_post_quizzes(client: TestClient, list_of_questions: list[QuestionIn]):
     assert len(response_2.json()["questions"]) == 2
     assert len(response_1.json()["questions"][0]["alternatives"]) == 3
     assert len(response_2.json()["questions"][0]["alternatives"]) == 3
+
+
+@patch("pawzzle.operations.quiz.datetime")
+def test_get_todays_quiz(
+    mocked_datetime_now: MagicMock,
+    client: TestClient,
+    list_of_questions: list[QuestionIn],
+):
+    mocked_datetime_now.now = Mock(return_value=datetime(2024, 8, 23))
+    quiz_in = QuizIn(target_date="2024-08-23", questions=list_of_questions)
+    client.post("/quiz", json=quiz_in.model_dump())
+
+    response = client.get("/quiz")
+
+    assert response.status_code == 200
+    assert response.json()["id"] == 1
+    assert len(response.json()["questions"]) == 2
+    assert len(response.json()["questions"][0]["alternatives"]) == 3

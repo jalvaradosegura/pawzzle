@@ -29,3 +29,8 @@ def get_quiz(
     quiz_id: int, session: Session = Depends(get_session)
 ) -> operations.QuizOut:
     return operations.get_quiz(session, quiz_id)
+
+
+@router.get("/quiz")
+def get_todays_quiz(session: Session = Depends(get_session)) -> operations.QuizOut:
+    return operations.get_todays_quiz(session)

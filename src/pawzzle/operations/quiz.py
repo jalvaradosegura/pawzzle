@@ -1,3 +1,4 @@
+from datetime import datetime
 from sqlalchemy.orm import Session
 
 from pawzzle import db
@@ -24,10 +25,24 @@ def store_quiz(session: Session, quiz_in: QuizIn) -> QuizOut:
     )
 
 
-def get_quiz(session: Session, id: int):
+def get_quiz(session: Session, id: int) -> QuizOut:
     quiz = db.select_quiz(session, id)
     return QuizOut(
         id=quiz.id,
         questions=[QuestionOut(**q.to_dict()) for q in quiz.questions],
         target_date=quiz.target_date,
     )
+
+
+def get_quiz_by_date(session: Session, date: str) -> QuizOut:
+    quiz = db.select_quiz_by_date(session, date)
+    return QuizOut(
+        id=quiz.id,
+        questions=[QuestionOut(**q.to_dict()) for q in quiz.questions],
+        target_date=quiz.target_date,
+    )
+
+
+def get_todays_quiz(session: Session) -> QuizOut:
+    current_date = datetime.now().strftime("%Y-%m-%d")
+    return get_quiz_by_date(session, current_date)
