@@ -1,6 +1,4 @@
 import os
-import random
-from typing import Any
 from datetime import datetime, timedelta
 
 import requests
@@ -8,41 +6,41 @@ import requests
 BACKEND_HOST = os.environ["BACKEND_HOST"]
 ALTERNATIVES_MIN_AMOUNT = 3
 ALTERNATIVES_MAX_AMOUNT = 5
+QUESTIONS_PER_QUIZ = 10
 YEAR = 2024
 
 
-def get_questions():
-    alternatives_amount = random.randint(
-        ALTERNATIVES_MIN_AMOUNT, ALTERNATIVES_MAX_AMOUNT
-    )
+def get_questions(amount_of_days_in_year: int):
     response = requests.get(
-        f"{BACKEND_HOST}/questions?questions_amount=10&alternatives_amount={alternatives_amount}",
-        headers={"api-key": os.environ["API_KEY"]},
-    )
-    return response.json()
-
-
-def create_quiz(target_date: str, questions: Any):
-    print("trying", target_date)
-    response = requests.post(
-        f"{BACKEND_HOST}/quiz",
-        json={"target_date": target_date, "questions": questions},
+        f"{BACKEND_HOST}/questions?questions_amount={QUESTIONS_PER_QUIZ * amount_of_days_in_year}&alternatives_amount=4",
         headers={"api-key": os.environ["API_KEY"]},
     )
     print(response)
+    return response.json()
 
 
 def loop_through_year(year: int):
     # Start with the first day of the year
-    start_date = datetime(year, 1, 1)
 
     quizzes = []
+
+    start_date = datetime(year, 1, 1)
+    amount_of_days_in_year = 365 if not year % 4 == 0 else 366
+    questions = get_questions(amount_of_days_in_year)
+
     # Loop through all days of the year
-    for i in range(365 if not year % 4 == 0 else 366):
+    idx = 0
+    for i in range(amount_of_days_in_year):
         current_date = start_date + timedelta(days=i)
         date_str = current_date.strftime("%Y-%m-%d")
-        questions = get_questions()
-        quizzes.append({"target_date": date_str, "questions": questions})
+
+        quizzes.append(
+            {
+                "target_date": date_str,
+                "questions": questions[idx : idx + QUESTIONS_PER_QUIZ],
+            }
+        )
+        idx += QUESTIONS_PER_QUIZ
 
     response = requests.post(
         f"{BACKEND_HOST}/quizzes",
