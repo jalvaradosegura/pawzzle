@@ -117,3 +117,21 @@ def test_get_quiz(client: TestClient, list_of_questions: list[QuestionIn]):
     assert response.json()["id"] == 1
     assert len(response.json()["questions"]) == 2
     assert len(response.json()["questions"][0]["alternatives"]) == 3
+
+
+def test_post_quizzes(client: TestClient, list_of_questions: list[QuestionIn]):
+    quiz_in_1 = QuizIn(target_date="2024-08-23", questions=list_of_questions)
+    quiz_in_2 = QuizIn(target_date="2024-08-24", questions=list_of_questions)
+    client.post("/quizzes", json=[quiz_in_1.model_dump(), quiz_in_2.model_dump()])
+
+    response_1 = client.get("/quiz/1")
+    response_2 = client.get("/quiz/2")
+
+    assert response_1.status_code == 200
+    assert response_2.status_code == 200
+    assert response_1.json()["id"] == 1
+    assert response_2.json()["id"] == 2
+    assert len(response_1.json()["questions"]) == 2
+    assert len(response_2.json()["questions"]) == 2
+    assert len(response_1.json()["questions"][0]["alternatives"]) == 3
+    assert len(response_2.json()["questions"][0]["alternatives"]) == 3

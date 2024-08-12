@@ -15,6 +15,15 @@ def post_quiz(
     return operations.store_quiz(session, quiz_in)
 
 
+@router.post("/quizzes", status_code=201)
+def post_quizzes(
+    quizzes_in: list[operations.QuizIn],
+    session: Session = Depends(get_session),
+):
+    for quiz_in in quizzes_in:
+        operations.store_quiz(session, quiz_in)
+
+
 @router.get("/quiz/{quiz_id}")
 def get_quiz(
     quiz_id: int, session: Session = Depends(get_session)

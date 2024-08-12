@@ -23,6 +23,7 @@ def get_questions():
 
 
 def create_quiz(target_date: str, questions: Any):
+    print("trying", target_date)
     response = requests.post(
         f"{BACKEND_HOST}/quiz",
         json={"target_date": target_date, "questions": questions},
@@ -35,12 +36,20 @@ def loop_through_year(year: int):
     # Start with the first day of the year
     start_date = datetime(year, 1, 1)
 
+    quizzes = []
     # Loop through all days of the year
     for i in range(365 if not year % 4 == 0 else 366):
         current_date = start_date + timedelta(days=i)
         date_str = current_date.strftime("%Y-%m-%d")
         questions = get_questions()
-        create_quiz(date_str, questions)
+        quizzes.append({"target_date": date_str, "questions": questions})
+
+    response = requests.post(
+        f"{BACKEND_HOST}/quizzes",
+        json=quizzes,
+        headers={"api-key": os.environ["API_KEY"]},
+    )
+    print(response)
 
 
 loop_through_year(YEAR)
