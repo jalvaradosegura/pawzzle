@@ -7,6 +7,7 @@ from sqlalchemy.orm import Session
 from pawzzle import db
 from pawzzle.operations.question import (
     generate_random_question,
+    seed_question_table,
     store_question,
     store_questions,
 )
@@ -65,3 +66,10 @@ def test_store_questions(session: Session) -> None:
     all_questions = db.select_all_questions(session)
 
     assert len(all_questions) == 3
+
+
+def test_seed_question_table(session: Session):
+    seed_question_table(session, questions_amount=20, alternatives_amount=4)
+    questions = db.select_all_questions(session)
+
+    assert len(questions) == 20

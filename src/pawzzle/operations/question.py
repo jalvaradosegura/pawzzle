@@ -22,7 +22,10 @@ def generate_random_question(
 
 
 def generate_random_questions(
-    session: Session, *, alternatives_amount: int, questions_amount: int
+    session: Session,
+    *,
+    questions_amount: int,
+    alternatives_amount: int,
 ) -> list[QuestionIn]:
     return [
         generate_random_question(session, alternatives_amount=alternatives_amount)
@@ -60,3 +63,14 @@ def store_questions(session: Session, questions: list[QuestionIn]) -> None:
         prepared_data.append(bulk_question)
 
     db.bulk_insert_questions(session, prepared_data)
+
+
+def seed_question_table(
+    session: Session, *, questions_amount: int, alternatives_amount: int
+) -> None:
+    questions = generate_random_questions(
+        session,
+        questions_amount=questions_amount,
+        alternatives_amount=alternatives_amount,
+    )
+    store_questions(session, questions)
