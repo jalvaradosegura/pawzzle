@@ -5,7 +5,7 @@ import pytest
 from sqlalchemy.orm import Session
 
 from pawzzle import db
-from pawzzle.operations.question import generate_random_question
+from pawzzle.operations.question import generate_random_question, store_questions
 from pawzzle.operations.quiz import (
     get_quiz,
     get_quiz_by_date,
@@ -36,6 +36,26 @@ def test_store_quiz(session: Session, list_of_questions: list[QuestionIn]):
     assert len(quiz.questions[0].alternatives) == 3
     assert len(quiz.questions[1].alternatives) == 3
     assert len(quiz.questions[2].alternatives) == 3
+
+
+def test_store_quiz_directly_use_db(
+    session: Session, list_of_questions: list[QuestionIn]
+):
+    store_questions(session, list_of_questions)
+    questions = db.select_all_questions(session)
+
+    quiz = db.Quiz(questions=questions, target_date="2024-08-23")
+    db.insert_quiz(session, quiz)
+    quiz = db.Quiz(questions=questions, target_date="2024-08-23")
+    db.insert_quiz(session, quiz)
+    quiz = db.select_quiz(session, 1)
+    associations = session.query(db.quiz_question_association).all()
+    questions = db.select_all_questions(session)
+
+    assert len(quiz.questions) == 3
+    assert quiz.target_date == "2024-08-23"
+    assert len(associations) == 6
+    assert len(questions) == 3
 
 
 def test_get_quiz(session: Session, list_of_questions: list[QuestionIn]):

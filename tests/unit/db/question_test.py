@@ -5,9 +5,22 @@ from pawzzle.db.question import (
     BulkQuestionData,
     bulk_insert_questions,
     insert_question,
+    randomly_select_n_questions,
     select_all_questions,
     select_question,
 )
+
+
+def create_n_questions(session: Session, n: int):
+    poodle = insert_dog(session, "Poodle")
+    pug = insert_dog(session, "Pug")
+    for _ in range(n):
+        insert_question(
+            session,
+            text="Which one is a Poodle?",
+            alternatives=[poodle, pug],
+            correct_dog=poodle,
+        )
 
 
 def test_insert_question(session: Session):
@@ -169,3 +182,9 @@ def test_select_all_questions_limit_and_offset(session: Session):
     assert len(questions) == 1
     assert questions[0].id == 2
     assert questions[0].text == "I'm a wrong question, but stored anyway"
+
+
+def test_randomly_select_n_questions(session: Session):
+    create_n_questions(session, 10)
+    questions = randomly_select_n_questions(session, 5)
+    assert len(questions) == 5

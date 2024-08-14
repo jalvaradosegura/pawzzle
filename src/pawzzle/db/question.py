@@ -1,6 +1,6 @@
 from typing import TypedDict
 
-from sqlalchemy import insert
+from sqlalchemy import func, insert
 from sqlalchemy.orm import Session
 
 from pawzzle.db.models import Dog, Question, question_dog_association
@@ -72,3 +72,8 @@ def bulk_insert_questions(
     session.commit()
 
     return inserted_ids
+
+
+def randomly_select_n_questions(session: Session, n: int) -> list[Question]:
+    query = session.query(Question)
+    return query.order_by(func.random()).limit(n).all()

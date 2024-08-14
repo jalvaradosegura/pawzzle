@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 
-from pawzzle.db.models import Question, Quiz
+from pawzzle.db.models import Quiz
 
 
 def select_all_quizzes(
@@ -23,8 +23,12 @@ def select_quiz_by_date(session: Session, date: str):
     return session.query(Quiz).filter(Quiz.target_date == date).one()
 
 
-def insert_quiz(session: Session, questions: list[Question], target_date: str) -> Quiz:
-    quiz = Quiz(questions=questions, target_date=target_date)
+def insert_quiz(session: Session, quiz: Quiz) -> Quiz:
     session.add(quiz)
     session.commit()
     return quiz
+
+
+def bulk_insert_quizzes(session: Session, quizzes: list[Quiz]):
+    session.add_all(quizzes)
+    session.commit()

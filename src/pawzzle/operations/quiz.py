@@ -16,7 +16,9 @@ def store_quiz(session: Session, quiz_in: QuizIn) -> QuizOut:
     ]
     questions_id = db.bulk_insert_questions(session, questions_to_bulk)
     questions = db.select_all_questions(session, filter_=questions_id)
-    quiz = db.insert_quiz(session, questions, quiz_in.target_date)
+    quiz = db.insert_quiz(
+        session, db.Quiz(questions=questions, target_date=quiz_in.target_date)
+    )
 
     return QuizOut(
         id=quiz.id,

@@ -6,7 +6,14 @@ from .dog import (
     randomly_select_n_dogs,
     select_all_dogs,
 )
-from .models import Answer, Dog, Question, question_dog_association
+from .models import (
+    Answer,
+    Dog,
+    Question,
+    Quiz,
+    question_dog_association,
+    quiz_question_association,
+)
 from .question import (
     BulkQuestionData,
     bulk_insert_questions,
