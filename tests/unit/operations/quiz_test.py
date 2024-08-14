@@ -5,11 +5,14 @@ import pytest
 from sqlalchemy.orm import Session
 
 from pawzzle import db
+from pawzzle.db.question import BulkQuestionData
 from pawzzle.operations.question import generate_random_question, store_questions
 from pawzzle.operations.quiz import (
+    generate_random_quiz,
     get_quiz,
     get_quiz_by_date,
     get_todays_quiz,
+    seed_quiz_table,
     store_quiz,
 )
 from pawzzle.operations.schemas import QuestionIn, QuizIn, QuizOut
@@ -102,3 +105,74 @@ def test_get_todays_quiz(
     assert len(quiz.questions[0].alternatives) == 3
     assert len(quiz.questions[1].alternatives) == 3
     assert len(quiz.questions[2].alternatives) == 3
+
+
+def test_generate_random_quiz(
+    session: Session,
+    list_of_questions: list[QuestionIn],
+):
+    bulk_data: list[BulkQuestionData] = [
+        {
+            "text": q.text,
+            "correct_dog_id": q.correct_dog.id,
+            "alternatives": [a.id for a in q.alternatives],
+        }
+        for q in list_of_questions
+    ]
+    db.bulk_insert_questions(session, bulk_data)
+
+    quiz = generate_random_quiz(session, questions_amount=5, target_date="2024-08-23")
+    questions = db.select_all_questions(session)
+
+    assert isinstance(quiz, QuizIn)
+    assert quiz.target_date == "2024-08-23"
+    assert len(questions) == 3
+    assert len(questions[0].alternatives) == 3
+    assert len(questions[1].alternatives) == 3
+    assert len(questions[2].alternatives) == 3
+
+
+def test_seed_quiz_table(
+    session: Session,
+    list_of_questions: list[QuestionIn],
+):
+    bulk_data: list[BulkQuestionData] = [
+        {
+            "text": q.text,
+            "correct_dog_id": q.correct_dog.id,
+            "alternatives": [a.id for a in q.alternatives],
+        }
+        for q in list_of_questions
+    ]
+    db.bulk_insert_questions(session, bulk_data)
+
+    seed_quiz_table(session, year=2024, questions_per_quiz=3)
+    quizzes = db.select_all_quizzes(session)
+    questions = db.select_all_questions(session)
+    associations = session.query(db.quiz_question_association).all()
+
+    assert len(quizzes) == 366
+    assert len(questions) == 3
+    assert len(associations) == 1098
+
+
+def test_seed_quiz_table_already_seeded(
+    session: Session,
+    list_of_questions: list[QuestionIn],
+):
+    bulk_data: list[BulkQuestionData] = [
+        {
+            "text": q.text,
+            "correct_dog_id": q.correct_dog.id,
+            "alternatives": [a.id for a in q.alternatives],
+        }
+        for q in list_of_questions
+    ]
+    db.bulk_insert_questions(session, bulk_data)
+    quiz = generate_random_quiz(session, questions_amount=5, target_date="2024-01-01")
+    store_quiz(session, quiz)
+
+    seed_quiz_table(session, year=2024, questions_per_quiz=3)
+    quizzes = db.select_all_quizzes(session)
+
+    assert len(quizzes) == 1

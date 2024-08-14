@@ -1,8 +1,9 @@
-from datetime import datetime
+import random
+from datetime import datetime, timedelta
 from sqlalchemy.orm import Session
 
 from pawzzle import db
-from pawzzle.operations.schemas import QuestionOut, QuizIn, QuizOut
+from pawzzle.operations.schemas import QuestionIn, QuestionOut, QuizIn, QuizOut
 
 
 def store_quiz(session: Session, quiz_in: QuizIn) -> QuizOut:
@@ -48,3 +49,32 @@ def get_quiz_by_date(session: Session, date: str) -> QuizOut:
 def get_todays_quiz(session: Session) -> QuizOut:
     current_date = datetime.now().strftime("%Y-%m-%d")
     return get_quiz_by_date(session, current_date)
+
+
+def generate_random_quiz(
+    session: Session, *, questions_amount: int, target_date: str
+) -> QuizIn:
+    questions = db.randomly_select_n_questions(session, questions_amount)
+    questions_in = [QuestionIn(**q.to_dict()) for q in questions]
+    return QuizIn(target_date=target_date, questions=questions_in)
+
+
+def seed_quiz_table(session: Session, *, year: int, questions_per_quiz: int = 10):
+    start_date = datetime(year, 1, 1)
+    start_date_str = start_date.strftime("%Y-%m-%d")
+
+    quizzes = session.query(db.Quiz).where(db.Quiz.target_date == start_date_str).all()
+    if quizzes:
+        return
+
+    quizzes: list[db.Quiz] = []
+    amount_of_days_in_year = 365 if not year % 4 == 0 else 366
+    all_questions = db.select_all_questions(session)
+    for i in range(amount_of_days_in_year):
+        current_date = start_date + timedelta(days=i)
+        current_date_str = current_date.strftime("%Y-%m-%d")
+        questions = random.sample(all_questions, questions_per_quiz)
+        quiz = db.Quiz(target_date=current_date_str, questions=questions)
+        quizzes.append(quiz)
+
+    db.bulk_insert_quizzes(session, quizzes)

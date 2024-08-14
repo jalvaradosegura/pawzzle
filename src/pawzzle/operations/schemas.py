@@ -46,6 +46,7 @@ class Quiz(BaseModel):
 
 class QuizIn(Quiz):
     questions: list[QuestionIn]
+    target_date: str = ""
 
 
 class QuizOut(Quiz):

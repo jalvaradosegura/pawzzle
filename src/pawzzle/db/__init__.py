@@ -18,7 +18,14 @@ from .question import (
     BulkQuestionData,
     bulk_insert_questions,
     insert_question,
+    randomly_select_n_questions,
     select_all_questions,
     select_question,
 )
-from .quiz import insert_quiz, select_quiz, select_quiz_by_date
+from .quiz import (
+    insert_quiz,
+    bulk_insert_quizzes,
+    select_all_quizzes,
+    select_quiz,
+    select_quiz_by_date,
+)

@@ -1,5 +1,6 @@
 from collections.abc import Callable
 from contextlib import asynccontextmanager
+from datetime import datetime
 from typing import Any
 
 from fastapi import FastAPI, HTTPException, Request, status
@@ -9,6 +10,8 @@ from sqlalchemy.orm import Session
 from pawzzle.assets import DATA_DIR_PATH
 from pawzzle.db.init import init_db
 from pawzzle.operations.dog import seed_dog_table
+from pawzzle.operations.question import seed_question_table
+from pawzzle.operations.quiz import seed_quiz_table
 from pawzzle.routers import answer, question, quiz
 from pawzzle.settings import Settings
 
@@ -23,6 +26,8 @@ async def lifespan(app: FastAPI):  # pragma: no cover
     engine = init_db(settings.db_connection_url, echo=settings.db_echo)  # type: ignore
     with Session(engine) as session:
         seed_dog_table(session, DATA_DIR_PATH / settings.dogs_file)
+        seed_question_table(session, questions_amount=5000, alternatives_amount=4)
+        seed_quiz_table(session, year=datetime.now().year)
     yield
 
 
