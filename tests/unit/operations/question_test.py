@@ -73,3 +73,11 @@ def test_seed_question_table(session: Session):
     questions = db.select_all_questions(session)
 
     assert len(questions) == 20
+
+
+def test_seed_question_table_already_seeded(session: Session):
+    seed_question_table(session, questions_amount=20, alternatives_amount=4)
+    seed_question_table(session, questions_amount=20, alternatives_amount=4)
+    questions = db.select_all_questions(session)
+
+    assert len(questions) == 20

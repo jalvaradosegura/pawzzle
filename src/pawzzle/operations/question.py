@@ -68,6 +68,10 @@ def store_questions(session: Session, questions: list[QuestionIn]) -> None:
 def seed_question_table(
     session: Session, *, questions_amount: int, alternatives_amount: int
 ) -> None:
+    question = db.select_all_questions(session, limit=1)
+    if question:
+        return
+
     questions = generate_random_questions(
         session,
         questions_amount=questions_amount,
