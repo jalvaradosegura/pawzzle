@@ -8,7 +8,7 @@ from pytest import MonkeyPatch
 from sqlalchemy.orm import Session
 
 from pawzzle import db
-from pawzzle.operations.question import generate_random_question
+from pawzzle.operations.question import generate_random_question, seed_question_table
 from pawzzle.operations.schemas import QuestionIn, QuizIn
 
 
@@ -155,3 +155,17 @@ def test_get_todays_quiz(
     assert response.json()["id"] == 1
     assert len(response.json()["questions"]) == 2
     assert len(response.json()["questions"][0]["alternatives"]) == 3
+
+
+def test_get_quiz_random(session: Session, client: TestClient):
+    db.insert_dog(session, "Poodle")
+    db.insert_dog(session, "Pug")
+    db.insert_dog(session, "Husky")
+    db.insert_dog(session, "Corgi")
+    seed_question_table(session, questions_amount=5, alternatives_amount=4)
+
+    response = client.get("/quiz/random")
+
+    assert response.status_code == 200
+    assert response.json()["target_date"] == ""
+    assert len(response.json()["questions"]) == 5

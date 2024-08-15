@@ -24,6 +24,11 @@ def post_quizzes(
         operations.store_quiz(session, quiz_in)
 
 
+@router.get("/quiz/random")
+def get_quiz_random(session: Session = Depends(get_session)) -> operations.QuizIn:
+    return operations.generate_random_quiz(session, questions_amount=10, target_date="")
+
+
 @router.get("/quiz/{quiz_id}")
 def get_quiz(
     quiz_id: int, session: Session = Depends(get_session)
