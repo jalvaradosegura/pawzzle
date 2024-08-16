@@ -7,4 +7,10 @@ class Settings(BaseSettings):
     dogs_file: str = ""
     origins: str = "http://localhost:3000"
     api_key: str = ""
+
+    sentry_dns: str = ""
+    sentry_environment: str = "local"
+    sentry_traces_sample_rate: float = 0.1
+    sentry_profiles_sample_rate: float = 0.05
+
     model_config = SettingsConfigDict(env_file=".env")

@@ -1,8 +1,10 @@
+import os
 from collections.abc import Callable
 from contextlib import asynccontextmanager
 from datetime import datetime
 from typing import Any
 
+import sentry_sdk
 from fastapi import FastAPI, HTTPException, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
@@ -29,6 +31,15 @@ async def lifespan(app: FastAPI):  # pragma: no cover
         seed_question_table(session, questions_amount=5000, alternatives_amount=4)
         seed_quiz_table(session, year=datetime.now().year)
     yield
+
+
+if os.environ.get("IS_TEST", None) != "True":  # pragma: no cover
+    sentry_sdk.init(
+        dsn=settings.sentry_dns,
+        environment=settings.sentry_environment,
+        traces_sample_rate=settings.sentry_traces_sample_rate,
+        profiles_sample_rate=settings.sentry_profiles_sample_rate,
+    )
 
 
 app = FastAPI(lifespan=lifespan)
