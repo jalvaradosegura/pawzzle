@@ -36,7 +36,8 @@ def test_insert_question(session: Session):
 
     assert question.id == 1
     assert question.text == "Which one is a Poodle?"
-    assert question.alternatives == [poodle, pug]
+    assert poodle in question.alternatives
+    assert pug in question.alternatives
     assert question.correct_dog == poodle
 
 
@@ -76,7 +77,8 @@ def test_select_question(session: Session):
 
     assert question.id == 1
     assert question.text == "Which one is a Poodle?"
-    assert question.alternatives == [poodle, pug]
+    assert poodle in question.alternatives
+    assert pug in question.alternatives
     assert question.correct_dog == poodle
 
 

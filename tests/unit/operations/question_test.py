@@ -52,9 +52,7 @@ def test_store_question(session: Session):
 
     assert stored_question.text == "Which one is a Poodle"
     assert stored_question.correct_dog.breed == "Poodle"
-    assert stored_question.alternatives[0].breed == "Poodle"
-    assert stored_question.alternatives[1].breed == "Pug"
-    assert stored_question.alternatives[2].breed == "Husky"
+    assert {a.breed for a in stored_question.alternatives} == {"Poodle", "Pug", "Husky"}
 
 
 def test_store_questions(session: Session) -> None:

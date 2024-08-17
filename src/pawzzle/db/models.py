@@ -50,10 +50,15 @@ class Question(Base):
     text: Mapped[str] = mapped_column(String(500))
 
     correct_dog_id: Mapped[int] = mapped_column(ForeignKey("dog.id"))
-    correct_dog: Mapped["Dog"] = relationship(back_populates="questions_where_correct")
+    correct_dog: Mapped["Dog"] = relationship(
+        back_populates="questions_where_correct",
+        lazy="joined",
+    )
 
     alternatives: Mapped[list["Dog"]] = relationship(
-        secondary=question_dog_association, back_populates="questions_as_alternative"
+        secondary=question_dog_association,
+        back_populates="questions_as_alternative",
+        lazy="joined",
     )
 
     quizzes: Mapped[list["Quiz"]] = relationship(
@@ -77,7 +82,9 @@ class Quiz(Base):
     target_date: Mapped[str] = mapped_column(String(50))
 
     questions: Mapped[list["Question"]] = relationship(
-        secondary=quiz_question_association, back_populates="quizzes"
+        secondary=quiz_question_association,
+        back_populates="quizzes",
+        lazy="joined",
     )
 
 

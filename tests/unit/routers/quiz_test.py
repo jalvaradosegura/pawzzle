@@ -37,76 +37,82 @@ def list_of_questions_fixture(session: Session) -> list[QuestionIn]:
     return [question_1, question_2]
 
 
-def test_post_quiz(client: TestClient, list_of_questions: list[QuestionIn]):
-    quiz_in = QuizIn(target_date="2024-08-23", questions=list_of_questions)
-    response = client.post("/quiz", json=quiz_in.model_dump())
-    assert response.status_code == 201
-    assert response.json() == {
-        "id": 1,
-        "target_date": "2024-08-23",
-        "questions": [
+def get_expected_questions():
+    expected_question_1 = {
+        "text": "Which one is a Poodle",
+        "correct_dog": {
+            "id": 1,
+            "breed": "Poodle",
+            "img_name": None,
+            "info_url": None,
+        },
+        "alternatives": [
             {
-                "text": "Which one is a Poodle",
-                "correct_dog": {
-                    "id": 1,
-                    "breed": "Poodle",
-                    "img_name": None,
-                    "info_url": None,
-                },
-                "alternatives": [
-                    {
-                        "id": 1,
-                        "breed": "Poodle",
-                        "img_name": None,
-                        "info_url": None,
-                    },
-                    {
-                        "id": 2,
-                        "breed": "Pug",
-                        "img_name": None,
-                        "info_url": None,
-                    },
-                    {
-                        "id": 3,
-                        "breed": "Husky",
-                        "img_name": None,
-                        "info_url": None,
-                    },
-                ],
                 "id": 1,
+                "breed": "Poodle",
+                "img_name": None,
+                "info_url": None,
             },
             {
-                "text": "Which one is a Husky",
-                "correct_dog": {
-                    "id": 3,
-                    "breed": "Husky",
-                    "img_name": None,
-                    "info_url": None,
-                },
-                "alternatives": [
-                    {
-                        "id": 1,
-                        "breed": "Poodle",
-                        "img_name": None,
-                        "info_url": None,
-                    },
-                    {
-                        "id": 2,
-                        "breed": "Pug",
-                        "img_name": None,
-                        "info_url": None,
-                    },
-                    {
-                        "id": 3,
-                        "breed": "Husky",
-                        "img_name": None,
-                        "info_url": None,
-                    },
-                ],
                 "id": 2,
+                "breed": "Pug",
+                "img_name": None,
+                "info_url": None,
+            },
+            {
+                "id": 3,
+                "breed": "Husky",
+                "img_name": None,
+                "info_url": None,
             },
         ],
+        "id": 1,
     }
+    expected_question_2 = {
+        "text": "Which one is a Husky",
+        "correct_dog": {
+            "id": 3,
+            "breed": "Husky",
+            "img_name": None,
+            "info_url": None,
+        },
+        "alternatives": [
+            {
+                "id": 1,
+                "breed": "Poodle",
+                "img_name": None,
+                "info_url": None,
+            },
+            {
+                "id": 2,
+                "breed": "Pug",
+                "img_name": None,
+                "info_url": None,
+            },
+            {
+                "id": 3,
+                "breed": "Husky",
+                "img_name": None,
+                "info_url": None,
+            },
+        ],
+        "id": 2,
+    }
+    return expected_question_1, expected_question_2
+
+
+def test_post_quiz(client: TestClient, list_of_questions: list[QuestionIn]):
+    quiz_in = QuizIn(target_date="2024-08-23", questions=list_of_questions)
+
+    response = client.post("/quiz", json=quiz_in.model_dump())
+    payload = response.json()
+    expected_question_1, expected_question_2 = get_expected_questions()
+
+    assert response.status_code == 201
+    assert payload["id"] == 1
+    assert payload["target_date"] == "2024-08-23"
+    assert expected_question_1 in payload["questions"]
+    assert expected_question_2 in payload["questions"]
 
 
 def test_get_quiz(client: TestClient, list_of_questions: list[QuestionIn]):
