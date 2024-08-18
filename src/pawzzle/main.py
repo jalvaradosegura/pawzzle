@@ -9,6 +9,7 @@ from fastapi import FastAPI, HTTPException, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 
 from pawzzle.assets import DATA_DIR_PATH
+from pawzzle.cache.valkey_cache import ValkeyCache
 from pawzzle.db.init import Session
 from pawzzle.operations.dog import seed_dog_table
 from pawzzle.operations.question import seed_question_table
@@ -27,6 +28,8 @@ async def lifespan(app: FastAPI):  # pragma: no cover
         seed_dog_table(session, DATA_DIR_PATH / settings.dogs_file)
         seed_question_table(session, questions_amount=5000, alternatives_amount=4)
         seed_quiz_table(session, year=datetime.now().year)
+
+    app.state.cache = ValkeyCache.from_url(settings.cache_connection_url)
     yield
 
 

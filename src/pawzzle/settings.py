@@ -8,6 +8,8 @@ class Settings(BaseSettings):
     origins: str = "http://localhost:3000"
     api_key: str = ""
 
+    cache_connection_url: str = ""
+
     sentry_dns: str = ""
     sentry_environment: str = "local"
     sentry_traces_sample_rate: float = 0.1

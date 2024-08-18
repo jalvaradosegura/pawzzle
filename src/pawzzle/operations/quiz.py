@@ -1,8 +1,11 @@
 import random
 from datetime import datetime, timedelta
+
 from sqlalchemy.orm import Session
 
 from pawzzle import db
+from pawzzle.cache.quiz import get_todays_quiz_if_cached, store_todays_quiz_in_cache
+from pawzzle.cache.types import Cache
 from pawzzle.operations.schemas import QuestionIn, QuestionOut, QuizIn, QuizOut
 
 
@@ -46,9 +49,16 @@ def get_quiz_by_date(session: Session, date: str) -> QuizOut:
     )
 
 
-def get_todays_quiz(session: Session) -> QuizOut:
-    current_date = datetime.now().strftime("%Y-%m-%d")
-    return get_quiz_by_date(session, current_date)
+def get_todays_quiz(cache: Cache, session: Session) -> QuizOut:
+    todays_date = datetime.now().strftime("%Y-%m-%d")
+    if quiz := get_todays_quiz_if_cached(cache, todays_date):
+        return QuizOut(**quiz)
+
+    quiz = get_quiz_by_date(session, todays_date)
+
+    store_todays_quiz_in_cache(cache, quiz.model_dump(), todays_date)
+
+    return quiz
 
 
 def generate_random_quiz(

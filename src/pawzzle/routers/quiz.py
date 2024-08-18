@@ -2,7 +2,8 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from pawzzle import operations
-from pawzzle.dependencies import get_session
+from pawzzle.cache.types import Cache
+from pawzzle.dependencies import get_session, get_cache
 
 router = APIRouter()
 
@@ -37,5 +38,7 @@ def get_quiz(
 
 
 @router.get("/quiz")
-def get_todays_quiz(session: Session = Depends(get_session)) -> operations.QuizOut:
-    return operations.get_todays_quiz(session)
+def get_todays_quiz(
+    cache: Cache = Depends(get_cache), session: Session = Depends(get_session)
+) -> operations.QuizOut:
+    return operations.get_todays_quiz(cache, session)

@@ -16,6 +16,7 @@ from pawzzle.operations.quiz import (
     store_quiz,
 )
 from pawzzle.operations.schemas import QuestionIn, QuizIn, QuizOut
+from tests.fakes.cache import CacheFake
 
 
 @pytest.fixture(name="list_of_questions")
@@ -97,7 +98,29 @@ def test_get_todays_quiz(
     quiz_in = QuizIn(questions=list_of_questions, target_date="2024-08-23")
     store_quiz(session, quiz_in)
 
-    quiz = get_todays_quiz(session)
+    quiz = get_todays_quiz(CacheFake(), session)
+
+    assert isinstance(quiz, QuizOut)
+    assert quiz.target_date == "2024-08-23"
+    assert len(quiz.questions) == 3
+    assert len(quiz.questions[0].alternatives) == 3
+    assert len(quiz.questions[1].alternatives) == 3
+    assert len(quiz.questions[2].alternatives) == 3
+
+
+@patch("pawzzle.operations.quiz.datetime")
+def test_get_todays_quiz_cached(
+    mocked_datetime_now: MagicMock,
+    session: Session,
+    list_of_questions: list[QuestionIn],
+):
+    mocked_datetime_now.now = Mock(return_value=datetime(2024, 8, 23))
+    quiz_in = QuizIn(questions=list_of_questions, target_date="2024-08-23")
+    store_quiz(session, quiz_in)
+    cache_fake = CacheFake()
+
+    get_todays_quiz(cache_fake, session)
+    quiz = get_todays_quiz(cache_fake, session)
 
     assert isinstance(quiz, QuizOut)
     assert quiz.target_date == "2024-08-23"

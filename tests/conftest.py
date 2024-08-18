@@ -8,9 +8,10 @@ from sqlalchemy.pool import StaticPool
 
 from pawzzle.assets import DATA_DIR_PATH
 from pawzzle.db.init import get_engine
-from pawzzle.dependencies import get_session
+from pawzzle.dependencies import get_cache, get_session
 from pawzzle.main import app
 from pawzzle.settings import Settings
+from tests.fakes.cache import CacheFake
 
 
 @pytest.fixture(name="session")
@@ -31,6 +32,11 @@ def client_fixture(session: Session, monkeypatch: MonkeyPatch):
         return session
 
     app.dependency_overrides[get_session] = get_session_override
+
+    def get_cache_override():
+        return CacheFake()
+
+    app.dependency_overrides[get_cache] = get_cache_override
 
     client = TestClient(app)
 
