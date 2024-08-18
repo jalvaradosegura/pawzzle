@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy.pool import StaticPool
 
 from pawzzle.assets import DATA_DIR_PATH
-from pawzzle.db.init import init_db
+from pawzzle.db.init import get_engine
 from pawzzle.dependencies import get_session
 from pawzzle.main import app
 from pawzzle.settings import Settings
@@ -15,9 +15,9 @@ from pawzzle.settings import Settings
 
 @pytest.fixture(name="session")
 def session_fixture():
-    engine = init_db(
+    engine = get_engine(
         "sqlite:///:memory:",
-        echo=False,  # type: ignore
+        echo=False,
         connect_args={"check_same_thread": False},
         poolclass=StaticPool,  # type: ignore
     )

@@ -7,10 +7,9 @@ from typing import Any
 import sentry_sdk
 from fastapi import FastAPI, HTTPException, Request, status
 from fastapi.middleware.cors import CORSMiddleware
-from sqlalchemy.orm import Session
 
 from pawzzle.assets import DATA_DIR_PATH
-from pawzzle.db.init import init_db
+from pawzzle.db.init import Session
 from pawzzle.operations.dog import seed_dog_table
 from pawzzle.operations.question import seed_question_table
 from pawzzle.operations.quiz import seed_quiz_table
@@ -24,9 +23,7 @@ origins = [*settings.origins.split(",")]
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):  # pragma: no cover
-
-    engine = init_db(settings.db_connection_url, echo=settings.db_echo)  # type: ignore
-    with Session(engine) as session:
+    with Session() as session:
         seed_dog_table(session, DATA_DIR_PATH / settings.dogs_file)
         seed_question_table(session, questions_amount=5000, alternatives_amount=4)
         seed_quiz_table(session, year=datetime.now().year)
