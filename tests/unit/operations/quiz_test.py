@@ -2,6 +2,7 @@ from datetime import datetime
 from unittest.mock import MagicMock, Mock, patch
 
 import pytest
+from fastapi import BackgroundTasks
 from sqlalchemy.orm import Session
 
 from pawzzle import db
@@ -98,7 +99,7 @@ def test_get_todays_quiz(
     quiz_in = QuizIn(questions=list_of_questions, target_date="2024-08-23")
     store_quiz(session, quiz_in)
 
-    quiz = get_todays_quiz(CacheFake(), session)
+    quiz = get_todays_quiz(CacheFake(), session, BackgroundTasks())
 
     assert isinstance(quiz, QuizOut)
     assert quiz.target_date == "2024-08-23"
@@ -118,9 +119,13 @@ def test_get_todays_quiz_cached(
     quiz_in = QuizIn(questions=list_of_questions, target_date="2024-08-23")
     store_quiz(session, quiz_in)
     cache_fake = CacheFake()
+    background_tasks = BackgroundTasks()
 
-    get_todays_quiz(cache_fake, session)
-    quiz = get_todays_quiz(cache_fake, session)
+    get_todays_quiz(cache_fake, session, background_tasks)
+    # Manually execute the background task
+    for task in background_tasks.tasks:
+        task.func(*task.args, **task.kwargs)
+    quiz = get_todays_quiz(cache_fake, session, background_tasks)
 
     assert isinstance(quiz, QuizOut)
     assert quiz.target_date == "2024-08-23"

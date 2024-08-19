@@ -1,6 +1,7 @@
 import random
 from datetime import datetime, timedelta
 
+from fastapi import BackgroundTasks
 from sqlalchemy.orm import Session
 
 from pawzzle import db
@@ -49,14 +50,18 @@ def get_quiz_by_date(session: Session, date: str) -> QuizOut:
     )
 
 
-def get_todays_quiz(cache: Cache, session: Session) -> QuizOut:
+def get_todays_quiz(
+    cache: Cache, session: Session, background_tasks: BackgroundTasks
+) -> QuizOut:
     todays_date = datetime.now().strftime("%Y-%m-%d")
     if quiz := get_todays_quiz_if_cached(cache, todays_date):
         return QuizOut(**quiz)
 
     quiz = get_quiz_by_date(session, todays_date)
 
-    store_todays_quiz_in_cache(cache, quiz.model_dump(), todays_date)
+    background_tasks.add_task(
+        store_todays_quiz_in_cache, cache, quiz.model_dump(), todays_date
+    )
 
     return quiz
 
