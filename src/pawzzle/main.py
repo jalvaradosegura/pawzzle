@@ -5,7 +5,8 @@ from datetime import datetime
 from typing import Any
 
 import sentry_sdk
-from fastapi import FastAPI, HTTPException, Request, status
+from fastapi import FastAPI, Request, status
+from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 
 from pawzzle.assets import DATA_DIR_PATH
@@ -57,7 +58,10 @@ async def authenticate_request(request: Request, call_next: Callable[[Request], 
         "api-key" not in request.headers
         or request.headers["api-key"] != settings.api_key
     ):
-        raise HTTPException(status.HTTP_401_UNAUTHORIZED, "You are not authorized")
+        return JSONResponse(
+            {"detail": "You are not authorized"},
+            status_code=status.HTTP_401_UNAUTHORIZED,
+        )
 
     response = await call_next(request)
     return response

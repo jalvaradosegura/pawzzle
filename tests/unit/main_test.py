@@ -1,5 +1,4 @@
-import pytest
-from fastapi.exceptions import HTTPException
+from fastapi import status
 from fastapi.testclient import TestClient
 
 
@@ -10,5 +9,7 @@ def test_middleware_fail(client: TestClient):
         "question_id": 1,
     }
 
-    with pytest.raises(HTTPException, match="401: You are not authorized"):
-        client.post("/answer", json=some_request)
+    response = client.post("/answer", json=some_request)
+
+    assert response.status_code == status.HTTP_401_UNAUTHORIZED
+    assert response.json() == {"detail": "You are not authorized"}
