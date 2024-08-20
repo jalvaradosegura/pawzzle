@@ -122,22 +122,27 @@ def test_bulk_insert_dogs(session: Session):
             {
                 "breed": "Affenpinscher",
                 "info_url": "https://en.wikipedia.org/wiki/Affenpinscher",
+                "img_name": "",
             },
             {
                 "breed": "Afghan Hound",
                 "info_url": "https://en.wikipedia.org/wiki/Afghan_Hound",
+                "img_name": "",
             },
             {
                 "breed": "Africanis",
                 "info_url": "https://en.wikipedia.org/wiki/Africanis",
+                "img_name": "",
             },
             {
                 "breed": "Alaskan Malamute",
                 "info_url": "https://en.wikipedia.org/wiki/Alaskan_Malamute",
+                "img_name": "",
             },
             {
                 "breed": "Alopekis",
                 "info_url": "https://en.wikipedia.org/wiki/Alopekis",
+                "img_name": "",
             },
         ],
     )
