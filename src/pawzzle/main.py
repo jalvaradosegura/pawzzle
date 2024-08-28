@@ -12,9 +12,12 @@ from fastapi.middleware.cors import CORSMiddleware
 from pawzzle.assets import DATA_DIR_PATH
 from pawzzle.cache.valkey_cache import ValkeyCache
 from pawzzle.db.init import Session
-from pawzzle.operations.dog import seed_dog_table
-from pawzzle.operations.question import seed_question_table
-from pawzzle.operations.quiz import seed_quiz_table
+from pawzzle.operations import (
+    seed_dog_table,
+    seed_question_table,
+    seed_quiz_table,
+    seed_rareness_table,
+)
 from pawzzle.routers import answer, question, quiz
 from pawzzle.settings import Settings
 
@@ -27,6 +30,7 @@ origins = [*settings.origins.split(",")]
 async def lifespan(app: FastAPI):  # pragma: no cover
     with Session() as session:
         seed_dog_table(session, DATA_DIR_PATH / settings.dogs_file)
+        seed_rareness_table(session)
         seed_question_table(session, questions_amount=5000, alternatives_amount=4)
         seed_quiz_table(session, year=datetime.now().year)
 

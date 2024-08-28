@@ -9,6 +9,7 @@ from .dog import (
 from .models import (
     Answer,
     Dog,
+    DogRareness,
     Question,
     Quiz,
     question_dog_association,

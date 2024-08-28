@@ -1,6 +1,15 @@
 from typing import Any
 
-from sqlalchemy import Boolean, Column, DateTime, ForeignKey, String, Table, func
+from sqlalchemy import (
+    Boolean,
+    Column,
+    DateTime,
+    ForeignKey,
+    Integer,
+    String,
+    Table,
+    func,
+)
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 
@@ -37,6 +46,8 @@ class Dog(Base):
     )
 
     answers: Mapped[list["Answer"]] = relationship()
+
+    rareness: Mapped["DogRareness"] = relationship()
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -101,6 +112,25 @@ class Answer(Base):
 
     dog_id: Mapped[int] = mapped_column(ForeignKey("dog.id"))
     dog: Mapped[Dog] = relationship(back_populates="answers")
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            column.name: getattr(self, column.name) for column in self.__table__.columns
+        }
+
+
+class DogRareness(Base):
+    __tablename__ = "dog_rareness"
+
+    id: Mapped[int] = mapped_column(ForeignKey("dog.id"), primary_key=True)
+    dog: Mapped["Dog"] = relationship(
+        back_populates="rareness",
+        lazy="joined",
+    )
+
+    common: Mapped[int] = mapped_column(Integer, default=0)
+    uncommon: Mapped[int] = mapped_column(Integer, default=0)
+    rare: Mapped[int] = mapped_column(Integer, default=0)
 
     def to_dict(self) -> dict[str, Any]:
         return {
