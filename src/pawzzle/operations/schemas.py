@@ -1,3 +1,4 @@
+from enum import StrEnum
 from pydantic import BaseModel
 
 
@@ -56,3 +57,14 @@ class QuizIn(Quiz):
 class QuizOut(Quiz):
     id: int
     questions: list[QuestionOut]
+
+
+class Rareness(StrEnum):
+    COMMON = "common"
+    UNCOMMON = "uncommon"
+    RARE = "rare"
+
+
+class RarenessUpdate(BaseModel):
+    dog_id: int
+    rareness: Rareness
