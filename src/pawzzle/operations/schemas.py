@@ -8,6 +8,10 @@ class DogIn(BaseModel):
     img_name: str | None
 
 
+class DogOut(DogIn):
+    pass
+
+
 class Question(BaseModel):
     text: str
     correct_dog: DogIn

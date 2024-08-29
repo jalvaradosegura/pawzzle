@@ -8,6 +8,7 @@ import sentry_sdk
 from fastapi import FastAPI, Request, status
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi_pagination import add_pagination
 
 from pawzzle.assets import DATA_DIR_PATH
 from pawzzle.cache.valkey_cache import ValkeyCache
@@ -18,7 +19,7 @@ from pawzzle.operations import (
     seed_quiz_table,
     seed_rareness_table,
 )
-from pawzzle.routers import answer, question, quiz
+from pawzzle.routers import answer, question, quiz, rareness
 from pawzzle.settings import Settings
 
 
@@ -54,6 +55,8 @@ app.add_middleware(
 app.include_router(answer.router)
 app.include_router(quiz.router)
 app.include_router(question.router)
+app.include_router(rareness.router)
+add_pagination(app)
 
 
 @app.middleware("http")
